@@ -1,0 +1,16 @@
+{
+  {% if salt['grains.get']('ip4_interfaces:eth0', None) %}
+  "bind_addr": "{{ grains['ip4_interfaces']['eth0'][0] }}",
+  {% endif %}
+  {% if salt['grains.get']('ip4_interfaces:enp0s8', None) %}
+  "bind_addr": "{{ grains['ip4_interfaces']['enp0s8'][0] }}",
+  {% endif %}
+  {% if salt['grains.get']('host', None) == 'master' %}
+  "client_addr": "0.0.0.0",
+  "bootstrap": true,
+  "server": true,
+  {% else %}
+  "start_join": [ "{{ grains['master'] }}" ],
+  {% endif %}
+  "rejoin_after_leave": true
+}

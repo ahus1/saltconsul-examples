@@ -1,0 +1,79 @@
+## Cheat sheet
+
+### Preparations
+
+Please place a ssh key called `id_rsa` and `id_rsa.pub` in the root of this folder. This key pair is used for the setup with DigitalOcean, but as of today the scripts running with the local VirtualBox installation will need them as well.
+
+### Getting started - Vagrant
+
+* start all boxes and automatically provision the master with:
+
+----
+vagrant up
+----
+
+* login as user root, change to the /vagrant folder and run to assimilate the minions:
+
+----
+salt-cloud -l debug -m mapfile-vagrant.yml
+----
+
+* Provision all servers one by one:
+
+----
+salt --batch-size 1 '*' state.highstate
+----
+
+* see the state of the cluster with http://localhost:8500/ui
+
+* Open the load balancer on http://localhost:9090/ - reload to see the pages of different servers
+
+* Shutdown
+
+----
+vagrant destroy -f
+----
+
+### Getting Started - DigitalOcean
+
+* You'll need to create yourself an API token. Please place this in `saltmaster_override.tf` (there is a sample file) and in `cloudcredentials.sls` (there is also a sample file)
+
+* Provision the master
+
+----
+terraform apply
+----
+
+* setup a web node
+
+----
+salt-cloud -l debug -p centos-digitalocean web1
+salt-cloud -l debug -p centos-digitalocean lb1
+----
+
+* drop a node
+
+----
+salt-cloud -l debug -d web1
+salt-cloud -l debug -d lb1
+----
+
+* create multiple
+
+----
+salt-cloud -l debug -m map -P
+----
+
+### Verify that minions are up
+
+----
+salt \* test.ping
+----
+
+### Run single state
+
+. `salt-call state.sls consul`
+
+### Connect manually
+
+. `ssh root...`

@@ -1,0 +1,9 @@
+# tag::setupkey[]
+provider "digitalocean" {
+    token = "cb93..f552"
+}
+
+resource "digitalocean_droplet" "master" {
+    ssh_keys = ["c8:df:...:41:ce"]
+}
+# end::setupkey[]

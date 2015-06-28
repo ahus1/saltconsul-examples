@@ -1,0 +1,105 @@
+[[introduction]]
+## Introduction
+
+This is a tutorial to show a step by step example for an initial setup in the cloud. By following this guide step by step you'll have a service running in the cloud at the end. 
+
+### Szenario
+
+The following scenario will be implemented step by step: A user will use his or her browser to contact a load balancer. This load balancer will know about two web servers and will forward the requests accordingly. See the following picture for details.
+
+
+.Infrastructure Big Picture
+[plantuml,file="uml-example.png"]
+--
+@startuml
+
+
+actor User
+
+node "Load Balancer" {
+
+[nginx]
+
+[consul] as consullb 
+
+}
+
+node "Webserver 1" {
+
+[consul] as consulws1
+
+[httpd] as httpdws1
+
+}
+
+node "Webserver 2" {
+
+[consul] as consulws2
+
+[httpd] as httpdws2
+
+}
+
+consullb .. consulws2
+consullb .. consulws1
+
+nginx --> httpdws1
+nginx --> httpdws2
+
+User --> nginx
+
+@enduml
+--
+
+### Tools and providers we use
+
+#### DigitalOcean 
+
+There are multiple hosting providers in the cloud. A very simple configuration for a start can be found at https://www.digitalocean.com/?refcode=532ccb598c03[DigitalOcean^].
+
+They offer a server starting from 5 USD a month with hourly billing. All functionality is available using an API. DigialOcean has been integrated in serveral automation tools already. 
+
+#### Hashicorp's Terraform
+
+The first step is to create a first server in the cloud with an initial setup. A tool that is suited for this https://www.terraform.io/[Terraform^].
+
+It allows you to define the resources of your cloud infrastructure in a short and concise format in a text file.
+You can use it to create and update your infrastructure in the cloud.
+
+#### Saltstack's Salt
+
+Once the server has been set up, it needs to be "provisioned", meaning that the all software and configuration settings are being applied. There are tools like Chef, Puppet and Ansible for this. A very recent tool to do this is http://docs.saltstack.com[Salt^].
+
+Again, this allows us to define the resource of the cloud infrastructure in a short an concise format in a text file.
+You can use it to create, update and manage your infrastructure in the cloud.
+
+#### Hashicorp's Consul 
+
+Once all the servers have been set up and provisioned, they need to know about each other, and they need to be monitored.
+A tool that is well suited for cloud environments like this is https://consul.io/[Consul^].
+
+It runs as a sidecar next to each service and monitors the service and the host it is running on. 
+
+Using Consul the loadbalancer will be aware of the different web servers it can forward requests to.
+
+#### CentOS Linux
+
+The Linux distribution used here is https://www.centos.org/[CentOS Linux Version 7^].
+It is derived from the sources of RedHat Enterprise Linux and is freely available.
+The new servers that we spin up here are all based on this distribution.
+I have chosen this Linux distribution as RedHat Enterprise Linux and CentOS are very present in the enterprises I have worked for.
+CentOS might not contain the very latest versions of different software versions, nevertheless this tutorial shows that all this works as well.
+It will also work with different flavours of Linux, although some of the names of the packages that are installed here will have different names.
+Consul and Salt will also work on Windows machines.
+
+#### Apache httpd
+
+http://httpd.apache.org/[Apache httpd^] is used as a web server in this setup.
+It will only serve static pages.
+You are free to extend this setup to enhance it to serve dynamic pages i.e. with PHP, or exchange it with an application server like Apache Tomcat.
+The load balancer will still work as expected.
+
+#### NGINX
+
+http://nginx.com/[NGINX^] is a web server that can be used to serve static pages, but it is also very popular to act as reverse proxy.
+As a reverse proxy it is the contact for the users on the internet. It forwards all incoming requests to backend web servers.

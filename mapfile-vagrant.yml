@@ -1,0 +1,20 @@
+# call with (no parallel, otherwise cached packages will stumble!):
+# salt-cloud -l debug -m mapfile-vagrant.yml
+# don't call a second time, as saltify will try to provision clients a second time
+
+# Afterwards call highstate one-after-the-other again not to hickup caches
+# salt --batch-size 1 '*' state.highstate
+
+centos-saltify:
+  - web1:
+      ssh_host: 192.168.23.21
+      password: vagrant
+  - web2:
+      ssh_host: 192.168.23.22
+      password: vagrant
+  - web3:
+      ssh_host: 192.168.23.23
+      password: vagrant
+  - lb1:
+      ssh_host: 192.168.23.31
+      password: vagrant

@@ -1,0 +1,69 @@
+## Create the webservers
+
+Now we have our Salt master running in the cloud as a command and control server. Using this as a stepping stone, we'll spin up some web servers.
+
+### Start new nodes using Salt
+
+Now you can tell Salt to spin up new servers. This is done using the command
+
+-----
+salt-cloud -l debug -p centos-digitalocean web1
+-----
+
+You will see that Salt talks to the DigitalOcean API and creates a VM like Terraform has done before. The benfit is, that the new VM (a "minion") is controlled by our master server.
+
+Use the command `salt-key` you'll see all minions that are registered with our master.
+
+Using `salt '*' test.ping` the master shows all servers that are reachable.
+
+With `salt-cloud -Q` you'll see up-to-date information about the currently running servers running in the cloud.
+
+### Install software on newly created nodes
+
+Nouw we'll define a state to describe what a web server should do. As a very simple example it will contain an Apache httpd web server and a simple HTML page that is being served. It will contain a little bit of dynamic content so that we'll know which server create the page once we have the loadbalancer in place.
+
+Create a file `web/init.sls` with the following content:
+
+[source,yaml]
+.web/init.sls
+----
+include::../../master/srv/salt/web/init.sls[tags=websetup]
+----
+
+This file will be evaluated on each web server using salt, and then saved as a static file in the httpd's folder.
+It will contain the public IP address of the server that is being retrieved from the Salt's context.
+
+[source,html]
+.web/conf/index.html
+----
+include::../../master/srv/salt/web/conf/index.html[]
+----
+
+
+Now tell Salt to run this state on all servers called `web*` that we will fire up in a second.
+
+[source,yaml]
+.top.sls
+----
+base:
+  ...
+include::../../master/srv/salt/top.sls[tags=websetup]
+----
+
+To run this state on the the server start the command
+
+----
+salt '*' state.highstate
+----
+
+This will trigger all states on all registered servers. This will install the web server packages on the newly created server `web1`.
+
+Now point your browser to the IP address of your server in your browser. You'll now see the web page that we have deployed to the server.
+
+Let's install another server with just two more commands:
+
+----
+salt-cloud -l debug -p centos-digitalocean web2
+----
+
+As in the `digitalocean.conf` file contains the setting `startup_states: highstate`, the new server will be installed with the latest configuration settings on startup.

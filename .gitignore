@@ -1,0 +1,12 @@
+/.vagrant
+/bin
+/download
+/terraform.tfstate.backup
+/terraform.tfstate
+/saltmaster_override.tf
+/.idea
+/tutorial/output
+/tutorial/10_introduction/images/uml-example.png
+/master.bat
+/sync.bat
+/id_rsa*

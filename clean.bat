@@ -1,0 +1,1 @@
+sed -i '%1' ~/.ssh/known_hosts

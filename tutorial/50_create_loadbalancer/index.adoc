@@ -1,0 +1,117 @@
+## Create loadbalancer
+
+### Install consul-template
+
+For our loadbalancer will need a configuration file that is written dynamically with the latest information available for our web nodes.
+This job is done by https://github.com/hashicorp/consul-template[consul-template^].
+
+This consists of a go binary, a configuration file for `systemd` and a configuration file for consul-template itself.
+
+To install this, there is the following state:
+
+[source,yaml]
+.top.sls
+----
+base:
+  ...
+include::../../master/srv/salt/top.sls[tags=consultemplate]
+----
+
+[source,yaml]
+.consul-template/init.sls
+----
+include::../../master/srv/salt/consul-template/init.sls[]
+----
+
+Together with it's configuration files:
+
+[source]
+.salt/consul-template/conf/consul-template.service
+----
+include::../../master/srv/salt/consul-template/conf/consul-template.service[]
+----
+
+[source]
+.salt/consul-template/templates/template.conf
+----
+include::../../master/srv/salt/consul-template/templates/template.conf[]
+----
+
+Now you can start the new loadbalancer node and provision it with these two commands:
+
+----
+salt-cloud -l debug -p centos-digitalocean lb1
+----
+
+Use the following command to have a look where this service is running:
+
+----
+salt '*' service.status consul-template
+----
+
+In the next step we'll use this service to keep the configuration file of our loadbalancer up-to-date.
+
+### Install nginx
+
+Now we have multiple web servers running. Now we need to place a loadbalancer in front of them. The software we can use as a load balancer is nginx (pronounced "engine-X").
+
+The installation is straight-forward like installing a web server. First create a state:
+
+[source,yaml]
+.salt/lb/init.sls
+----
+include::../../master/srv/salt/lb/init.sls[]
+----
+
+With the following referenced files:
+
+[source,plain]
+.salt/lb/conf/nginx.conf
+----
+include::../../master/srv/salt/lb/conf/nginx.conf[]
+----
+
+[source,json]
+.salt/lb/conf/nginx.json
+----
+include::../../master/srv/salt/lb/conf/nginx.json[]
+----
+
+[source,plain]
+.salt/lb/conf/nginx-consul.conf
+----
+include::../../master/srv/salt/lb/conf/nginx-consul.conf[]
+----
+
+[source,plain]
+.salt/lb/conf/upstream.ctmpl
+----
+include::../../master/srv/salt/lb/conf/upstream.ctmpl[]
+----
+
+[source,plain]
+.salt/lb/conf/nginx-consul.conf
+----
+include::../../master/srv/salt/lb/conf/nginx-consul.conf[]
+----
+
+Then associate this state with a loadbalancer node:
+
+[source,yaml]
+.top.sls
+----
+base:
+  ...
+  'lb*':
+include::../../master/srv/salt/top.sls[tags=lbsetup]
+----
+
+Publish this configuration to your nodes:
+
+----
+salt '*' state.highstate
+----
+
+Point your browser to `http://<LB-IPADDRESS>:9090/` to see the website loadbalancing over multiple servers.
+Every time you reload your browser, nginx will direct the request to a different server and you'll
+see a different server's IP address.

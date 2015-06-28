@@ -1,0 +1,1 @@
+SET PATH=bin;%PATH%

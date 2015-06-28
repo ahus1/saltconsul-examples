@@ -1,0 +1,14 @@
+{
+
+  "service": {"name": "web", "tags": ["web"], "port": 80},
+
+  "check": {
+    "id": "api",
+    "name": "HTTP API on port 80",
+    "http": "http://localhost:80",
+    "service_id": "web",
+    "interval": "10s",
+    "timeout": "1s"
+  }
+  
+}

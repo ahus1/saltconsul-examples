@@ -1,0 +1,30 @@
+## Cleanup tutorial
+
+### Shutdown nodes created by Salt Cloud
+
+Log in to the salt master.
+
+Issue the following commands:
+
+----
+# query cloud nodes
+salt-cloud -Q
+# delete nodes
+salt-cloud -d web1 web2 web3 web4 web5 lb1
+----
+
+Then log off from the master.
+
+### Destroy node created with Terraform
+
+Issue the following command:
+
+----
+terraform destroy
+----
+
+### Double Check Digital Ocean Console
+
+Log in on the web console of digital ocean and check if all nodes have been destroyed.
+
+If not, destroy them manually (as they would otherwise waste money)

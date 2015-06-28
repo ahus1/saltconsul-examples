@@ -1,0 +1,14 @@
+[Unit]
+Description=Consul Template is a tool to keep configuration files up to date
+Documentation=https://github.com/hashicorp/consul-template
+After=consul.service
+Wants=consul.service
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/bin/consul-template -config=/etc/consul-template
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

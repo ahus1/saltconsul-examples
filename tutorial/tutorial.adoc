@@ -1,0 +1,26 @@
+:toc: left
+:linkcss:
+:stylesdir: css/
+:source-highlighter: coderay
+:numbered:
+:icons: font
+// using experimental to support btn: macro
+:experimental:
+
+# Terraform and Saltstack
+
+include::10_introduction/index.adoc[]
+
+include::20_getting_started/index.adoc[]
+
+include::30_setup_saltstack/index.adoc[]
+
+include::35_setup_saltcloud/index.adoc[]
+
+include::40_create_webservers/index.adoc[]
+
+include::45_setup_monitoring/index.adoc[]
+
+include::50_create_loadbalancer/index.adoc[]
+
+include::60_cleanup/index.adoc[]

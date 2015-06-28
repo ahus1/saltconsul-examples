@@ -1,0 +1,81 @@
+## Setup of Salt Cloud
+
+Now it's time to teach Salt how to spin up more servers.
+
+The start of the Salstack configuration is the file `top.sls` in the folder `salt`:
+
+[source,yaml]
+.salt/top.sls
+----
+include::../../master/srv/salt/top.sls[tags=mastersetup]
+----
+
+This should be read as follows: For the `base` configuration, when on the server `master`, please make sure that the state defined in `salt.cloud` is applied, when the `state.highstate` command is issued. The
+
+The state `salt.cloud` in this case is the file `cloud.sls` in the directory `salt`.
+The syntax is that different tokens are delimited with a dot ("`.`"). The elements at the beginning are directories. The last element can be a directory or a file. If it is a directory, Salt will look up the `init.sls` file. If it is a file, Salt will look for a file with the token name plus `.sls` at the end.
+
+[source,yaml]
+.salt/cloud/init.sls
+----
+include::../../master/srv/salt/cloud/init.sls[tags=saltintro]
+----
+
+Here are the contents of the files referenced:
+
+[source,yaml]
+.salt/cloud/conf/digitalocean.conf
+----
+include::../../master/srv/salt/cloud/conf/digitalocean.conf[tags=saltintro]
+----
+
+[source,yaml]
+.salt/cloud/centos-digitalocean.sls
+----
+include::../../master/srv/salt/cloud/conf/centos-digitalocean.conf[tags=saltintro]
+----
+
+
+As Saltstack wil setup some new servers with DigitalOcean for you, it will also need your access token like Terraform did.
+
+Environment specific information is being held in a pillar. Please place it within a file called `cloudcredentials.sls` within the `srv/pillar` directory.
+
+[source,yaml]
+.pillar/cloudcredentials.sls
+----
+include::../../master/srv/pillar/cloudcredentials.sls.sample[tags=saltintro]
+----
+
+You then reference this file in the `top.sls` file in the `srv/pillar` directory.
+
+[source,yaml]
+.pillar/top.sls
+----
+include::../../master/srv/pillar/top.sls[tags=saltintro]
+----
+
+This configuration ensures, that the secret API key is only available on the master.
+
+The difference between the salt states and the pillars is as follows: the contents of all states are avaialble to all minions of a saltmaster.
+But the contents of the pillars are delivered to the minions on a need-to-know basis.
+Therefore pillars will contain the secret bits of the configuration: passwords and keys.
+
+You can test this as follows:
+
+[source,shell]
+----
+# show list of available commands of salt-cloud
+salt-cloud -h
+# show the setup of providers (reads local configuration only)
+# should show my-digitalocean-config with digitalocean
+salt-cloud --list-providers
+# show the setup of profiles with digitalocean (ready local configuration only)
+# should show centos-digitalocean with my-digitalocean-config
+salt-cloud --list-profiles=my-digitalocean-config
+# show available locations for provider digitalocean
+salt-cloud --list-locations=my-digitalocean-config
+# show a list of instances in the cloud (accesses the cloud and uses the key, should be empty now)
+salt-cloud -Q
+----
+
+

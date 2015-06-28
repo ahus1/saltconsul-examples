@@ -1,0 +1,14 @@
+{
+
+  "service": {"name": "consul-ui", "tags": ["consul"], "port": 8500},
+
+  "check": {
+    "id": "api",
+    "name": "HTTP API on port 8500",
+    "http": "http://localhost:8500",
+    "service_id": "consul-ui",
+    "interval": "10s",
+    "timeout": "1s"
+  }
+
+}

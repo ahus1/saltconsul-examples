@@ -1,0 +1,35 @@
+# Example Project for Terraform, Saltstack, Consul and DigitalOcean
+
+## About
+
+This started out as an example on how to use the following three software packages in a tutorial:
+
+   * http://terraform.io/[Terraform^] - spin up new servers and orchestrate resources in the cloud from a simple text file.
+
+   * https://www.digitalocean.com/[DigitalOcean^] - a cloud provider. Use their API to spin up virtual servers as needed.
+
+   * http://docs.saltstack.com/[SaltStack's Salt^] - install and manage software on a server. With it's cloud add-on it can also spin up new servers in the cloud.
+
+   * https://consul.io/[Consul^] - service discovery and monitoring in the cloud.
+
+This setup will show you a setup where a ngix load balancer distributes the load between multiple web servers.
+
+There is a <<tutorial/tutorial.adoc#doc,full tutorial>> in the `tutorial` sub folder on how to do this.
+
+For experienced users there is a <<cheatsheet.adoc#doc,minimal set of instructions>> in `cheatsheet.adoc`.
+
+## License
+
+Copyright 2015 Alexander Schwartz
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

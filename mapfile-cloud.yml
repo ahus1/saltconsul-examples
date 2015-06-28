@@ -1,0 +1,5 @@
+centos-digitalocean:
+  - web1
+  - web2
+  - web3
+  - lb1
