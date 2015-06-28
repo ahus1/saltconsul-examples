@@ -1,3 +1,4 @@
+ifdef::env-github[:outfilesuffix: .adoc]
 :ext-relative: {outfilesuffix}
 
 # Example Project for Terraform, Saltstack, Consul and DigitalOcean
