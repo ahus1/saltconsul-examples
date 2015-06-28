@@ -1,3 +1,5 @@
+:ext-relative: {outfilesuffix}
+
 # Example Project for Terraform, Saltstack, Consul and DigitalOcean
 
 ## About
@@ -14,9 +16,9 @@ This started out as an example on how to use the following three software packag
 
 This setup will show you a setup where a ngix load balancer distributes the load between multiple web servers.
 
-There is a <<tutorial/tutorial.adoc#doc,full tutorial>> in the `tutorial` sub folder on how to do this.
+There is a <<tutorial/tutorial{ext-relative},full tutorial>> in the `tutorial` sub folder on how to do this.
 
-For experienced users there is a <<cheatsheet.adoc#doc,minimal set of instructions>> in `cheatsheet.adoc`.
+For experienced users there is a <<cheatsheet{ext-relative},minimal set of instructions>> in `cheatsheet.adoc`.
 
 ## License
 

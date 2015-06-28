@@ -1,3 +1,4 @@
+[[cheat-sheet]]
 ## Cheat sheet
 
 ### Preparations

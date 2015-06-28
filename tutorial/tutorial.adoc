@@ -7,6 +7,7 @@
 // using experimental to support btn: macro
 :experimental:
 
+[[tutorial]]
 # Terraform and Saltstack
 
 include::10_introduction/index.adoc[]
