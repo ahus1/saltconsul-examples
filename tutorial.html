@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.2">
-<title>Terraform and Saltstack</title>
+<title>Manage the cloud with Terraform, Salt, Consul and DigitalOcean</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400">
 <link rel="stylesheet" href="css//asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
@@ -13,7 +13,7 @@
 </head>
 <body id="tutorial" class="book toc2 toc-left">
 <div id="header">
-<h1>Terraform and Saltstack</h1>
+<h1>Manage the cloud with Terraform, Salt, Consul and DigitalOcean</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
@@ -33,7 +33,7 @@
 <li><a href="#_setup_of_terraform_and_creating_a_first_virtual_machine">2.6. Setup of Terraform and creating a first virtual machine</a></li>
 </ul>
 </li>
-<li><a href="#_setup_of_saltstack">3. Setup of Saltstack</a>
+<li><a href="#_setup_of_salt">3. Setup of Salt</a>
 <ul class="sectlevel2">
 <li><a href="#_startup_the_salt_master_in_the_cloud">3.1. Startup the salt master in the cloud</a></li>
 <li><a href="#_synchronize_a_local_configuration_to_your_salt_master">3.2. Synchronize a local configuration to your salt master</a></li>
@@ -52,7 +52,7 @@
 <li><a href="#_add_monitoring_for_the_web_server">6.2. Add monitoring for the web server</a></li>
 </ul>
 </li>
-<li><a href="#_create_loadbalancer">7. Create loadbalancer</a>
+<li><a href="#_createing_the_load_balancer">7. Createing the load balancer</a>
 <ul class="sectlevel2">
 <li><a href="#_install_consul_template">7.1. Install consul-template</a></li>
 <li><a href="#_install_nginx">7.2. Install nginx</a></li>
@@ -65,6 +65,7 @@
 <li><a href="#_double_check_digital_ocean_console">8.3. Double Check Digital Ocean Console</a></li>
 </ul>
 </li>
+<li><a href="#_license">Appendix A: License</a></li>
 </ul>
 </div>
 </div>
@@ -74,6 +75,10 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a tutorial to show a step by step example for an initial setup in the cloud. By following this guide step by step you&#8217;ll have a service running in the cloud at the end.</p>
+</div>
+<div class="paragraph">
+<p>If you have questions please contact me (<a href="mailto:alexander.schwartz@gmx.net">alexander.schwartz@gmx.net</a>), discuss it on GitHub (<a href="https://github.com/ahus1/saltconsul-examples/" class="bare">https://github.com/ahus1/saltconsul-examples/</a>) or even submit pull requests.
+You can meet me in person at conferences and user group meetings.</p>
 </div>
 <div class="sect2">
 <h3 id="_szenario">1.1. Szenario</h3>
@@ -95,7 +100,7 @@
 <p>There are multiple hosting providers in the cloud. A very simple configuration for a start can be found at <a href="https://www.digitalocean.com/?refcode=532ccb598c03" target="_blank">DigitalOcean</a>.</p>
 </div>
 <div class="paragraph">
-<p>They offer a server starting from 5 USD a month with hourly billing. All functionality is available using an API. DigialOcean has been integrated in serveral automation tools already.</p>
+<p>They offer a server starting from 5 USD a month with hourly billing. All functionality is available using an API. DigialOcean has been integrated in several automation tools already.</p>
 </div>
 </div>
 <div class="sect3">
@@ -128,7 +133,7 @@ A tool that is well suited for cloud environments like this is <a href="https://
 <p>It runs as a sidecar next to each service and monitors the service and the host it is running on.</p>
 </div>
 <div class="paragraph">
-<p>Using Consul the loadbalancer will be aware of the different web servers it can forward requests to.</p>
+<p>Using Consul the load balancer will be aware of the different web servers it can forward requests to.</p>
 </div>
 </div>
 <div class="sect3">
@@ -138,8 +143,8 @@ A tool that is well suited for cloud environments like this is <a href="https://
 It is derived from the sources of RedHat Enterprise Linux and is freely available.
 The new servers that we spin up here are all based on this distribution.
 I have chosen this Linux distribution as RedHat Enterprise Linux and CentOS are very present in the enterprises I have worked for.
-CentOS might not contain the very latest versions of different software versions, nevertheless this tutorial shows that all this works as well.
-It will also work with different flavours of Linux, although some of the names of the packages that are installed here will have different names.
+CentOS might not contain the very latest versions of several software packages, nevertheless this tutorial shows that all this works as well.
+It will also work with different flavors of Linux, although some of the names of the packages that are installed here will have different names.
 Consul and Salt will also work on Windows machines.</p>
 </div>
 </div>
@@ -189,7 +194,7 @@ As a reverse proxy it is the contact for the users on the internet. It forwards 
 <div class="sect2">
 <h3 id="_create_a_ssh_key">2.3. Create a SSH key</h3>
 <div class="paragraph">
-<p>When you want to access a command line on a linux server, you&#8217;ll use secure shell (SSH) to access it. It is possible to use a username and password combination to log in. The more secure way is to use a public/private key pair. This has the following advantages:</p>
+<p>When you want to access a command line on a Linux server, you&#8217;ll use secure shell (SSH) to access it. It is possible to use a username and password combination to log in. The more secure way is to use a public/private key pair. This has the following advantages:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -202,7 +207,7 @@ As a reverse proxy it is the contact for the users on the internet. It forwards 
 </ol>
 </div>
 <div class="paragraph">
-<p>To do that please download <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">PuTTY and PuTTYgen</a>. Even if you already have a keypair, use the time to create a key pair just for this tutorial.</p>
+<p>To do that please download <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">PuTTY and PuTTYgen</a>. Even if you already have a key pair, use the time to create a key pair just for this tutorial.</p>
 </div>
 <div class="paragraph">
 <p>Once you run it, you&#8217;ll see the following dialoge shown in <a href="#img-puttygen-createkey">Creating a key with puttygen</a>.</p>
@@ -242,7 +247,7 @@ This tutorial will not use a password for your keys.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>create a local file called <code>id_rsa.pub</code> in the project folder. Copy the contents of the field labled "Public key for pasting into &#8230;&#8203;" into this file. It should be one long line that looks like this:</p>
+<p>create a local file called <code>id_rsa.pub</code> in the project folder. Copy the contents of the field labeled "Public key for pasting into &#8230;&#8203;" into this file. It should be one long line that looks like this:</p>
 </li>
 </ul>
 </div>
@@ -302,16 +307,16 @@ DigitalOcean is used in this example. It specializes in running virtual machines
 </div>
 <div class="paragraph">
 <p>Please use the following afiliate link to register at DigitalOcean: <a href="https://www.digitalocean.com/?refcode=532ccb598c03" class="bare">https://www.digitalocean.com/?refcode=532ccb598c03</a>.
-Using this link you&#8217;ll automatically receive 10 USD credit. If you have registered before, or if you haven&#8217;t received the credit, you could try to redemm <code>ALLSSD10</code> as a promo code to receive 10 USD credit.</p>
+Using this link you&#8217;ll automatically receive 10 USD credit. If you have registered before, or if you haven&#8217;t received the credit, you could try to redeem <code>ALLSSD10</code> as a promo code to receive 10 USD credit.</p>
 </div>
 <div class="paragraph">
-<p>Once you have registered you should add some extra safety to you account by activating <a href="http://de.wikipedia.org/wiki/Google_Authenticator" target="_blank">Google Authenticator</a>. When you activate it, you will need in addition to username and password also a token that is created by an app on your mobile phone. This way no-one can log in to your DigitalOcean account with only your username and password.</p>
+<p>Once you have registered you should add some extra safety to your account by activating <a href="http://de.wikipedia.org/wiki/Google_Authenticator" target="_blank">Google Authenticator</a>. When you activate it, you will need in addition to username and password also a token that is created by an app on your mobile phone. This way no-one can log in to your DigitalOcean account with only your username and password.</p>
 </div>
 <div class="paragraph">
 <p>In the <a href="https://cloud.digitalocean.com/settings/security" target="_blank">security settings of DigitalOcean</a> you should set up two-factor-authentication. You&#8217;ll need to <a href="https://support.google.com/accounts/answer/1066447" target="_blank">install Google Authenticator on a mobile device</a> to create a PIN code whenever you log in to your DigitalOcean account.</p>
 </div>
 <div class="paragraph">
-<p>After you have registered you&#8217;ll need register a payment method, for example a credit card. This is a matter of authenticating yourself.</p>
+<p>After you have registered you&#8217;ll need to register a payment method, for example a credit card. This is a matter of authenticating yourself.</p>
 </div>
 <div class="paragraph">
 <p>As we&#8217;ll want to script everything we do in the following steps, please create an API token. This needs to be a token with read and write access. You&#8217;ll pass on this token to all programs that will access your account. At any point in time you can revoke it without changing your main password.</p>
@@ -350,7 +355,7 @@ Using this link you&#8217;ll automatically receive 10 USD credit. If you have re
 
 <span class="error">#</span> <span class="error">F</span><span class="error">i</span><span class="error">n</span><span class="error">g</span><span class="error">e</span><span class="error">r</span><span class="error">p</span><span class="error">r</span><span class="error">i</span><span class="error">n</span><span class="error">t</span> <span class="error">o</span><span class="error">f</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>, <span class="error">j</span><span class="error">u</span><span class="error">s</span><span class="error">t</span> <span class="error">t</span><span class="error">o</span> <span class="error">h</span><span class="error">a</span><span class="error">v</span><span class="error">e</span> <span class="error">i</span><span class="error">t</span> <span class="error">a</span><span class="error">t</span> <span class="error">h</span><span class="error">a</span><span class="error">n</span><span class="error">d</span><span class="error">.</span> <span class="error">P</span><span class="error">l</span><span class="error">e</span><span class="error">a</span><span class="error">s</span><span class="error">e</span> <span class="error">e</span><span class="error">x</span><span class="error">c</span><span class="error">h</span><span class="error">a</span><span class="error">n</span><span class="error">g</span><span class="error">e</span> <span class="error">i</span><span class="error">t</span> <span class="error">w</span><span class="error">i</span><span class="error">t</span><span class="error">h</span> <span class="error">y</span><span class="error">o</span><span class="error">u</span><span class="error">r</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>
 <span class="error">#</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">c8:df:df:...:d9:41:ce</span><span class="delimiter">&quot;</span></span>
-<span class="error">#</span> <span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="error">l</span><span class="error">i</span><span class="error">c</span> <span class="error">d</span><span class="error">i</span><span class="error">g</span><span class="error">i</span><span class="error">t</span><span class="error">a</span><span class="error">l</span> <span class="error">o</span><span class="error">c</span><span class="error">e</span><span class="error">a</span><span class="error">n</span> <span class="error">S</span><span class="error">S</span><span class="error">H</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>
+<span class="error">#</span> <span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="error">l</span><span class="error">i</span><span class="error">c</span> <span class="error">D</span><span class="error">i</span><span class="error">g</span><span class="error">i</span><span class="error">t</span><span class="error">a</span><span class="error">l</span><span class="error">O</span><span class="error">c</span><span class="error">e</span><span class="error">a</span><span class="error">n</span> <span class="error">S</span><span class="error">S</span><span class="error">H</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>
 <span class="error">r</span><span class="error">e</span><span class="error">s</span><span class="error">o</span><span class="error">u</span><span class="error">r</span><span class="error">c</span><span class="error">e</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean_ssh_key</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">default</span><span class="delimiter">&quot;</span></span> {
     <span class="error">n</span><span class="error">a</span><span class="error">m</span><span class="error">e</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Terraform Example</span><span class="delimiter">&quot;</span></span>
     <span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="error">l</span><span class="error">i</span><span class="error">c</span><span class="error">_</span><span class="error">k</span><span class="error">e</span><span class="error">y</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">${file(</span><span class="delimiter">&quot;</span></span><span class="error">i</span><span class="error">d</span><span class="error">_</span><span class="error">r</span><span class="error">s</span><span class="error">a</span><span class="error">.</span><span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="string"><span class="delimiter">&quot;</span><span class="content">)}</span><span class="delimiter">&quot;</span></span>
@@ -374,7 +379,7 @@ Using this link you&#8217;ll automatically receive 10 USD credit. If you have re
 </div>
 </div>
 <div class="paragraph">
-<p>Sidenote: if you want to put your secret and personal information in a separate file, please see the <a href="https://www.terraform.io/docs/configuration/override.html" target="_blank">override configuration of Terraform</a>. This allows you to have a separate file <code>saltmaster_override.tf</code> with all the secret stuff that you can avoid to check in to a repository.</p>
+<p>Side note: if you want to put your secret and personal information in a separate file, please see the <a href="https://www.terraform.io/docs/configuration/override.html" target="_blank">override configuration of Terraform</a>. This allows you to have a separate file <code>saltmaster_override.tf</code> with all the secret stuff that you can avoid to check in to a repository.</p>
 </div>
 <div class="listingblock">
 <div class="title">saltmaster_override.tf</div>
@@ -395,7 +400,7 @@ Using this link you&#8217;ll automatically receive 10 USD credit. If you have re
 <p>Once you are happy with it, run <code>bin\terraform apply</code>.</p>
 </div>
 <div class="paragraph">
-<p>You will see the output of Terraform on the console. When you check DigitalOcean&#8217;s web console, you&#8217;ll see that the first "Droplet" has been created. In you account settings you also see that a SSH key has been registered with your account.</p>
+<p>You will see the output of Terraform on the console. When you check DigitalOcean&#8217;s web console, you&#8217;ll see that the first "Droplet" has been created. In your account settings you also see that a SSH key has been registered with your account.</p>
 </div>
 <div class="paragraph">
 <p>You can see the IP address of the new server in the output of the Terraform command. At any time later you can look up the server DigitalOcean&#8217;s web console, or use <code>bin\terraform show</code> to show the state of the currently created resources.</p>
@@ -424,7 +429,7 @@ When you the issue another <code>bin\terraform apply</code> command, the resourc
 <p>See <a href="#img-putty-keyauth">Login with a private Putty key</a> on where enter your private key. Then click on <b class="button">Open</b> to connect to your machine.</p>
 </li>
 <li>
-<p>Use <code>root</code> as the user name whe you log in. You should not be asked for a password if everything has been setup correctly.</p>
+<p>Use <code>root</code> as the user name when you log in. You should not be asked for a password if everything has been setup correctly.</p>
 </li>
 </ol>
 </div>
@@ -435,13 +440,13 @@ When you the issue another <code>bin\terraform apply</code> command, the resourc
 <div class="title">Figure 3. Login with a private Putty key</div>
 </div>
 <div class="paragraph">
-<p>Congratulations! You have now set up automatically a server in the cloud. And as everything has been scripted, it is totally reproducable. Try out yourself with different combinations of <code>apply</code>, <code>taint</code> and <code>destroy</code> to get yourself familiar with this setup.</p>
+<p>Congratulations! You have now set up automatically a server in the cloud. And as everything has been scripted, it is totally reproducible. Try out yourself with different combinations of <code>apply</code>, <code>taint</code> and <code>destroy</code> to get yourself familiar with this setup.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_setup_of_saltstack">3. Setup of Saltstack</h2>
+<h2 id="_setup_of_salt">3. Setup of Salt</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_startup_the_salt_master_in_the_cloud">3.1. Startup the salt master in the cloud</h3>
@@ -449,13 +454,13 @@ When you the issue another <code>bin\terraform apply</code> command, the resourc
 <p>Terraform is a great tool to setup servers from scratch. This is why we used it in the previous example. But it has only limited capabilities to install software on the new server and to keep that up-to-date.</p>
 </div>
 <div class="paragraph">
-<p>We will apply the existing capabilities of Terraform to install a tool that is better suited to do that. This tool will be Saltstack. Like Terraform Saltstack takes the configuration of the new machine in a declarative form. Saltstack competes with Puppet, Chef and Ansible to install and configure software. Saltstack has been chosen as it support a very declarative syntax to define the state of software and configuration files. It is also known to scale up to many thousands of servers.</p>
+<p>We will apply the existing capabilities of Terraform to install a tool that is better suited to do that. This tool will be Salt. Like Terraform Salt takes the configuration of the new machine in a declarative form. Salt competes with Puppet, Chef and Ansible to install and configure software. Salt has been chosen as it support a very declarative syntax to define the state of software and configuration files. It is also known to scale up to many thousands of servers.</p>
 </div>
 <div class="paragraph">
 <p>First you&#8217;ll need to tell Terraform how to connect to the new server. Do this by adding a <code>connection</code> to your Terraform configuration file.</p>
 </div>
 <div class="paragraph">
-<p>A set of configuration files will be needed on the saltstack master, both in <code>/etc/salt</code> (for configuration files) and <code>/srv</code> (for state files describing the to-be state of your upcoming setup). It will also copy the SSH key you&#8217;ve created to the cloud as we&#8217;ll use it to setup the additional servers.</p>
+<p>A set of configuration files will be needed on the Salt master, both in <code>/etc/salt</code> (for configuration files) and <code>/srv</code> (for state files describing the to-be state of your upcoming setup). It will also copy the SSH key you&#8217;ve created to the cloud as we&#8217;ll use it to setup the additional servers.</p>
 </div>
 <div class="paragraph">
 <p>There is a procedure to boostrap salt on an empty machine that can be run as a single line of code on the command line. A second command runs the provisioning of the master.</p>
@@ -532,7 +537,7 @@ A <code>master.bat</code> file has been created automatically with the master&#8
 </div>
 <div class="listingblock">
 <div class="content">
-<pre># ensure that the minion on the master connected sucessfully
+<pre># ensure that the minion on the master connected successfully
 salt '*' test.ping</pre>
 </div>
 </div>
@@ -549,7 +554,7 @@ salt '*' state.highstate</pre>
 <p>You can continue editing the files in the local <code>master/srv</code> folder and sync it to the salt master.</p>
 </div>
 <div class="paragraph">
-<p>Download <a href="https://www.itefix.net/content/cwrsync-free-edition" target="_blank"><code>rsync for windows</a> and unpack it to the `bin</code> folder.</p>
+<p>Download <a href="https://www.itefix.net/content/cwrsync-free-edition" target="_blank">rsync for windows</a> and unpack it to the <code>bin</code> folder.</p>
 </div>
 <div class="paragraph">
 <p>Use the <code>sync.bat</code> file to sync any changes you have made to the <code>srv</code> folder to the salt master.</p>
@@ -681,7 +686,7 @@ The syntax is that different tokens are delimited with a dot (&#8220;.&#8221;). 
 <p>This configuration ensures, that the secret API key is only available on the master.</p>
 </div>
 <div class="paragraph">
-<p>The difference between the salt states and the pillars is as follows: the contents of all states are avaialble to all minions of a saltmaster.
+<p>The difference between the salt states and the pillars is as follows: the contents of all states are available to all minions of a Salt master.
 But the contents of the pillars are delivered to the minions on a need-to-know basis.
 Therefore pillars will contain the secret bits of the configuration: passwords and keys.</p>
 </div>
@@ -723,7 +728,8 @@ salt-cloud -Q</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You will see that Salt talks to the DigitalOcean API and creates a VM like Terraform has done before. The benfit is, that the new VM (a "minion") is controlled by our master server.</p>
+<p>You will see that Salt talks to the DigitalOcean API and creates a VM like Terraform has done before.
+The benefit is, that the new VM (a "minion") is controlled by our master server.</p>
 </div>
 <div class="paragraph">
 <p>Use the command <code>salt-key</code> you&#8217;ll see all minions that are registered with our master.</p>
@@ -738,7 +744,7 @@ salt-cloud -Q</code></pre>
 <div class="sect2">
 <h3 id="_install_software_on_newly_created_nodes">5.2. Install software on newly created nodes</h3>
 <div class="paragraph">
-<p>Nouw we&#8217;ll define a state to describe what a web server should do. As a very simple example it will contain an Apache httpd web server and a simple HTML page that is being served. It will contain a little bit of dynamic content so that we&#8217;ll know which server create the page once we have the loadbalancer in place.</p>
+<p>Now we&#8217;ll define a state to describe what a web server should do. As a very simple example it will contain an Apache httpd web server and a simple HTML page that is being served. It will contain a little bit of dynamic content so that we&#8217;ll know which server create the page once we have the load balancer in place.</p>
 </div>
 <div class="paragraph">
 <p>Create a file <code>web/init.sls</code> with the following content:</p>
@@ -980,7 +986,7 @@ You can now look at consul&#8217;s console using a web browser and the salt mast
 </div>
 </div>
 <div class="paragraph">
-<p>As soon as you deploy this configuration using saltstack, you&#8217;ll see that this service appears in the Consul UI.</p>
+<p>As soon as you deploy this configuration using Salt, you&#8217;ll see that this service appears in the Consul UI.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -995,12 +1001,12 @@ that are running you web service.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_create_loadbalancer">7. Create loadbalancer</h2>
+<h2 id="_createing_the_load_balancer">7. Createing the load balancer</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_install_consul_template">7.1. Install consul-template</h3>
 <div class="paragraph">
-<p>For our loadbalancer will need a configuration file that is written dynamically with the latest information available for our web nodes.
+<p>For our load balancer will need a configuration file that is written dynamically with the latest information available for our web nodes.
 This job is done by <a href="https://github.com/hashicorp/consul-template" target="_blank">consul-template</a>.</p>
 </div>
 <div class="paragraph">
@@ -1048,7 +1054,7 @@ This job is done by <a href="https://github.com/hashicorp/consul-template" targe
 </div>
 </div>
 <div class="paragraph">
-<p>Together with it&#8217;s configuration files:</p>
+<p>Together with its configuration files:</p>
 </div>
 <div class="listingblock">
 <div class="title">salt/consul-template/conf/consul-template.service</div>
@@ -1084,7 +1090,7 @@ syslog {
 </div>
 </div>
 <div class="paragraph">
-<p>Now you can start the new loadbalancer node and provision it with these two commands:</p>
+<p>Now you can start the new load balancer node and provision it with these two commands:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1100,13 +1106,13 @@ syslog {
 </div>
 </div>
 <div class="paragraph">
-<p>In the next step we&#8217;ll use this service to keep the configuration file of our loadbalancer up-to-date.</p>
+<p>In the next step we&#8217;ll use this service to keep the configuration file of our load balancer up-to-date.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_install_nginx">7.2. Install nginx</h3>
 <div class="paragraph">
-<p>Now we have multiple web servers running. Now we need to place a loadbalancer in front of them. The software we can use as a load balancer is nginx (pronounced "engine-X").</p>
+<p>Now we have multiple web servers running. Now we need to place a load balancer in front of them. The software we can use as a load balancer is nginx (pronounced "engine-X").</p>
 </div>
 <div class="paragraph">
 <p>The installation is straight-forward like installing a web server. First create a state:</p>
@@ -1292,7 +1298,7 @@ http {
 </div>
 </div>
 <div class="paragraph">
-<p>Then associate this state with a loadbalancer node:</p>
+<p>Then associate this state with a load balancer node:</p>
 </div>
 <div class="listingblock">
 <div class="title">top.sls</div>
@@ -1356,7 +1362,7 @@ salt-cloud -d web1 web2 web3 web4 web5 lb1</pre>
 <div class="sect2">
 <h3 id="_double_check_digital_ocean_console">8.3. Double Check Digital Ocean Console</h3>
 <div class="paragraph">
-<p>Log in on the web console of digital ocean and check if all nodes have been destroyed.</p>
+<p>Log in on the web console of DigitalOcean and check if all nodes have been destroyed.</p>
 </div>
 <div class="paragraph">
 <p>If not, destroy them manually (as they would otherwise waste money)</p>
@@ -1364,10 +1370,33 @@ salt-cloud -d web1 web2 web3 web4 web5 lb1</pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_license">Appendix A: License</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Copyright 2015 Alexander Schwartz</p>
+</div>
+<div class="paragraph">
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+</div>
+<div class="paragraph">
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0" class="bare">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div>
+<div class="paragraph">
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-06-29 14:14:55 UTC
+Last updated 2015-06-29 20:33:17 UTC
 </div>
 </div>
 </body>
