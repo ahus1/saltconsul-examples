@@ -19,13 +19,13 @@ Please install https://tortoisegit.org/[TortoiseGit^] to do this. Please choose 
 
 ### Create a SSH key
 
-When you want to access a command line on a linux server, you'll use secure shell (SSH) to access it. It is possible to use a username and password combination to log in. The more secure way is to use a public/private key pair. This has the following advantages:
+When you want to access a command line on a Linux server, you'll use secure shell (SSH) to access it. It is possible to use a username and password combination to log in. The more secure way is to use a public/private key pair. This has the following advantages:
 
 . A private key is _very_ long, and therefore it can't be guessed.
 
 . You can give away your public key to multiple servers to log in. Even if one of the servers is being compromised no-one will be able to impersonate yourself with the public key.
 
-To do that please download http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html[PuTTY and PuTTYgen^]. Even if you already have a keypair, use the time to create a key pair just for this tutorial.
+To do that please download http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html[PuTTY and PuTTYgen^]. Even if you already have a key pair, use the time to create a key pair just for this tutorial.
 
 Once you run it, you'll see the following dialoge shown in <<img-puttygen-createkey>>.
 
@@ -47,7 +47,7 @@ This tutorial will not use a password for your keys.
 
 Please proceed as follows:
 
-* create a local file called `id_rsa.pub` in the project folder. Copy the contents of the field labled "Public key for pasting into ..." into this file. It should be one long line that looks like this:
+* create a local file called `id_rsa.pub` in the project folder. Copy the contents of the field labeled "Public key for pasting into ..." into this file. It should be one long line that looks like this:
 
 -----
 ssh-rsa AAAAB3NzaC1yc2E...ANqTeH4scPYaQ== rsa-key-20150527
@@ -83,13 +83,13 @@ In order to run your virtual machines in the cloud you'll need to set up an acco
 DigitalOcean is used in this example. It specializes in running virtual machines in the cloud. For this they have multiple data centers around the world. In April 2015 they have opened a data center in Frankfurt am Main, Germany. There are almost no additional services except hosting DNS entries. This will give us the clear view we'll need today.
 
 Please use the following afiliate link to register at DigitalOcean: https://www.digitalocean.com/?refcode=532ccb598c03.
-Using this link you'll automatically receive 10 USD credit. If you have registered before, or if you haven't received the credit, you could try to redemm `ALLSSD10` as a promo code to receive 10 USD credit.
+Using this link you'll automatically receive 10 USD credit. If you have registered before, or if you haven't received the credit, you could try to redeem `ALLSSD10` as a promo code to receive 10 USD credit.
 
-Once you have registered you should add some extra safety to you account by activating http://de.wikipedia.org/wiki/Google_Authenticator[Google Authenticator^]. When you activate it, you will need in addition to username and password also a token that is created by an app on your mobile phone. This way no-one can log in to your DigitalOcean account with only your username and password.
+Once you have registered you should add some extra safety to your account by activating http://de.wikipedia.org/wiki/Google_Authenticator[Google Authenticator^]. When you activate it, you will need in addition to username and password also a token that is created by an app on your mobile phone. This way no-one can log in to your DigitalOcean account with only your username and password.
 
 In the https://cloud.digitalocean.com/settings/security[security settings of DigitalOcean^] you should set up two-factor-authentication. You'll need to https://support.google.com/accounts/answer/1066447[install Google Authenticator on a mobile device^] to create a PIN code whenever you log in to your DigitalOcean account.
 
-After you have registered you'll need register a payment method, for example a credit card. This is a matter of authenticating yourself.
+After you have registered you'll need to register a payment method, for example a credit card. This is a matter of authenticating yourself.
 
 As we'll want to script everything we do in the following steps, please create an API token. This needs to be a token with read and write access. You'll pass on this token to all programs that will access your account. At any point in time you can revoke it without changing your main password.
 
@@ -117,7 +117,7 @@ Please create a first configuration file for Terraform called `saltmaster.tf`. I
 include::../../saltmaster.tf[tags=setupkey]
 ----
 
-Sidenote: if you want to put your secret and personal information in a separate file, please see the https://www.terraform.io/docs/configuration/override.html[override configuration of Terraform^]. This allows you to have a separate file `saltmaster_override.tf` with all the secret stuff that you can avoid to check in to a repository.
+Side note: if you want to put your secret and personal information in a separate file, please see the https://www.terraform.io/docs/configuration/override.html[override configuration of Terraform^]. This allows you to have a separate file `saltmaster_override.tf` with all the secret stuff that you can avoid to check in to a repository.
 
 [source,json]
 .saltmaster_override.tf
@@ -129,7 +129,7 @@ Now run `bin\terraform plan` on the command line. When everything in your file i
 
 Once you are happy with it, run `bin\terraform apply`.
 
-You will see the output of Terraform on the console. When you check DigitalOcean's web console, you'll see that the first "Droplet" has been created. In you account settings you also see that a SSH key has been registered with your account.
+You will see the output of Terraform on the console. When you check DigitalOcean's web console, you'll see that the first "Droplet" has been created. In your account settings you also see that a SSH key has been registered with your account.
 
 You can see the IP address of the new server in the output of the Terraform command. At any time later you can look up the server DigitalOcean's web console, or use `bin\terraform show` to show the state of the currently created resources.
 
@@ -148,9 +148,9 @@ Perform the following steps to connect to your new newly created machine:
 
 . See <<img-putty-keyauth>> on where enter your private key. Then click on btn:[Open] to connect to your machine.
 
-. Use `root` as the user name whe you log in. You should not be asked for a password if everything has been setup correctly.
+. Use `root` as the user name when you log in. You should not be asked for a password if everything has been setup correctly.
 
 [[img-putty-keyauth]]
 image::putty_keyauth.png[title="Login with a private Putty key"]
 
-Congratulations! You have now set up automatically a server in the cloud. And as everything has been scripted, it is totally reproducable. Try out yourself with different combinations of `apply`, `taint` and `destroy` to get yourself familiar with this setup.
+Congratulations! You have now set up automatically a server in the cloud. And as everything has been scripted, it is totally reproducible. Try out yourself with different combinations of `apply`, `taint` and `destroy` to get yourself familiar with this setup.

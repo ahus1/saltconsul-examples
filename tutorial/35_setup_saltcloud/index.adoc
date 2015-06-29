@@ -56,7 +56,7 @@ include::../../master/srv/pillar/top.sls[tags=saltintro]
 
 This configuration ensures, that the secret API key is only available on the master.
 
-The difference between the salt states and the pillars is as follows: the contents of all states are avaialble to all minions of a saltmaster.
+The difference between the salt states and the pillars is as follows: the contents of all states are available to all minions of a Salt master.
 But the contents of the pillars are delivered to the minions on a need-to-know basis.
 Therefore pillars will contain the secret bits of the configuration: passwords and keys.
 

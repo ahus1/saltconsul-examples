@@ -10,7 +10,8 @@ Now you can tell Salt to spin up new servers. This is done using the command
 salt-cloud -l debug -p centos-digitalocean web1
 -----
 
-You will see that Salt talks to the DigitalOcean API and creates a VM like Terraform has done before. The benfit is, that the new VM (a "minion") is controlled by our master server.
+You will see that Salt talks to the DigitalOcean API and creates a VM like Terraform has done before.
+The benefit is, that the new VM (a "minion") is controlled by our master server.
 
 Use the command `salt-key` you'll see all minions that are registered with our master.
 
@@ -20,7 +21,7 @@ With `salt-cloud -Q` you'll see up-to-date information about the currently runni
 
 ### Install software on newly created nodes
 
-Nouw we'll define a state to describe what a web server should do. As a very simple example it will contain an Apache httpd web server and a simple HTML page that is being served. It will contain a little bit of dynamic content so that we'll know which server create the page once we have the loadbalancer in place.
+Now we'll define a state to describe what a web server should do. As a very simple example it will contain an Apache httpd web server and a simple HTML page that is being served. It will contain a little bit of dynamic content so that we'll know which server create the page once we have the load balancer in place.
 
 Create a file `web/init.sls` with the following content:
 

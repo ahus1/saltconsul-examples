@@ -1,8 +1,8 @@
-## Create loadbalancer
+## Createing the load balancer
 
 ### Install consul-template
 
-For our loadbalancer will need a configuration file that is written dynamically with the latest information available for our web nodes.
+For our load balancer will need a configuration file that is written dynamically with the latest information available for our web nodes.
 This job is done by https://github.com/hashicorp/consul-template[consul-template^].
 
 This consists of a go binary, a configuration file for `systemd` and a configuration file for consul-template itself.
@@ -23,7 +23,7 @@ include::../../master/srv/salt/top.sls[tags=consultemplate]
 include::../../master/srv/salt/consul-template/init.sls[]
 ----
 
-Together with it's configuration files:
+Together with its configuration files:
 
 [source]
 .salt/consul-template/conf/consul-template.service
@@ -37,7 +37,7 @@ include::../../master/srv/salt/consul-template/conf/consul-template.service[]
 include::../../master/srv/salt/consul-template/templates/template.conf[]
 ----
 
-Now you can start the new loadbalancer node and provision it with these two commands:
+Now you can start the new load balancer node and provision it with these two commands:
 
 ----
 salt-cloud -l debug -p centos-digitalocean lb1
@@ -49,11 +49,11 @@ Use the following command to have a look where this service is running:
 salt '*' service.status consul-template
 ----
 
-In the next step we'll use this service to keep the configuration file of our loadbalancer up-to-date.
+In the next step we'll use this service to keep the configuration file of our load balancer up-to-date.
 
 ### Install nginx
 
-Now we have multiple web servers running. Now we need to place a loadbalancer in front of them. The software we can use as a load balancer is nginx (pronounced "engine-X").
+Now we have multiple web servers running. Now we need to place a load balancer in front of them. The software we can use as a load balancer is nginx (pronounced "engine-X").
 
 The installation is straight-forward like installing a web server. First create a state:
 
@@ -95,7 +95,7 @@ include::../../master/srv/salt/lb/conf/upstream.ctmpl[]
 include::../../master/srv/salt/lb/conf/nginx-consul.conf[]
 ----
 
-Then associate this state with a loadbalancer node:
+Then associate this state with a load balancer node:
 
 [source,yaml]
 .top.sls

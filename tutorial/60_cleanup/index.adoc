@@ -25,6 +25,6 @@ terraform destroy
 
 ### Double Check Digital Ocean Console
 
-Log in on the web console of digital ocean and check if all nodes have been destroyed.
+Log in on the web console of DigitalOcean and check if all nodes have been destroyed.
 
 If not, destroy them manually (as they would otherwise waste money)

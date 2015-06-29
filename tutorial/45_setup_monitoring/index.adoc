@@ -69,7 +69,7 @@ And here the file:
 include::../../master/srv/salt/web/conf/httpd.json[]
 ----
 
-As soon as you deploy this configuration using saltstack, you'll see that this service appears in the Consul UI.
+As soon as you deploy this configuration using Salt, you'll see that this service appears in the Consul UI.
 
 ----
 salt '*' state.highstate

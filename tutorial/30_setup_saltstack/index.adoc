@@ -1,14 +1,14 @@
-## Setup of Saltstack
+## Setup of Salt
 
 ### Startup the salt master in the cloud
 
 Terraform is a great tool to setup servers from scratch. This is why we used it in the previous example. But it has only limited capabilities to install software on the new server and to keep that up-to-date.
 
-We will apply the existing capabilities of Terraform to install a tool that is better suited to do that. This tool will be Saltstack. Like Terraform Saltstack takes the configuration of the new machine in a declarative form. Saltstack competes with Puppet, Chef and Ansible to install and configure software. Saltstack has been chosen as it support a very declarative syntax to define the state of software and configuration files. It is also known to scale up to many thousands of servers.
+We will apply the existing capabilities of Terraform to install a tool that is better suited to do that. This tool will be Salt. Like Terraform Salt takes the configuration of the new machine in a declarative form. Salt competes with Puppet, Chef and Ansible to install and configure software. Salt has been chosen as it support a very declarative syntax to define the state of software and configuration files. It is also known to scale up to many thousands of servers.
 
 First you'll need to tell Terraform how to connect to the new server. Do this by adding a `connection` to your Terraform configuration file.
 
-A set of configuration files will be needed on the saltstack master, both in `/etc/salt` (for configuration files) and `/srv` (for state files describing the to-be state of your upcoming setup). It will also copy the SSH key you've created to the cloud as we'll use it to setup the additional servers.
+A set of configuration files will be needed on the Salt master, both in `/etc/salt` (for configuration files) and `/srv` (for state files describing the to-be state of your upcoming setup). It will also copy the SSH key you've created to the cloud as we'll use it to setup the additional servers.
 
 There is a procedure to boostrap salt on an empty machine that can be run as a single line of code on the command line. A second command runs the provisioning of the master.
 
@@ -34,7 +34,7 @@ A `master.bat` file has been created automatically with the master's most recent
 Issue the following command to check if everything worked fine:
 
 ----
-# ensure that the minion on the master connected sucessfully
+# ensure that the minion on the master connected successfully
 salt '*' test.ping
 ----
 
@@ -49,7 +49,7 @@ salt '*' state.highstate
 
 You can continue editing the files in the local `master/srv` folder and sync it to the salt master.
 
-Download https://www.itefix.net/content/cwrsync-free-edition[`rsync for windows^] and unpack it to the `bin` folder.
+Download https://www.itefix.net/content/cwrsync-free-edition[rsync for windows^] and unpack it to the `bin` folder.
 
 Use the `sync.bat` file to sync any changes you have made to the `srv` folder to the salt master.
 

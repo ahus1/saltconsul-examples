@@ -1,7 +1,10 @@
 [[introduction]]
 ## Introduction
 
-This is a tutorial to show a step by step example for an initial setup in the cloud. By following this guide step by step you'll have a service running in the cloud at the end. 
+This is a tutorial to show a step by step example for an initial setup in the cloud. By following this guide step by step you'll have a service running in the cloud at the end.
+
+If you have questions please contact me (alexander.schwartz@gmx.net), discuss it on GitHub (https://github.com/ahus1/saltconsul-examples/) or even submit pull requests.
+You can meet me in person at conferences and user group meetings.
 
 ### Szenario
 
@@ -57,7 +60,7 @@ User --> nginx
 
 There are multiple hosting providers in the cloud. A very simple configuration for a start can be found at https://www.digitalocean.com/?refcode=532ccb598c03[DigitalOcean^].
 
-They offer a server starting from 5 USD a month with hourly billing. All functionality is available using an API. DigialOcean has been integrated in serveral automation tools already. 
+They offer a server starting from 5 USD a month with hourly billing. All functionality is available using an API. DigialOcean has been integrated in several automation tools already.
 
 #### Hashicorp's Terraform
 
@@ -80,7 +83,7 @@ A tool that is well suited for cloud environments like this is https://consul.io
 
 It runs as a sidecar next to each service and monitors the service and the host it is running on. 
 
-Using Consul the loadbalancer will be aware of the different web servers it can forward requests to.
+Using Consul the load balancer will be aware of the different web servers it can forward requests to.
 
 #### CentOS Linux
 
@@ -88,8 +91,8 @@ The Linux distribution used here is https://www.centos.org/[CentOS Linux Version
 It is derived from the sources of RedHat Enterprise Linux and is freely available.
 The new servers that we spin up here are all based on this distribution.
 I have chosen this Linux distribution as RedHat Enterprise Linux and CentOS are very present in the enterprises I have worked for.
-CentOS might not contain the very latest versions of different software versions, nevertheless this tutorial shows that all this works as well.
-It will also work with different flavours of Linux, although some of the names of the packages that are installed here will have different names.
+CentOS might not contain the very latest versions of several software packages, nevertheless this tutorial shows that all this works as well.
+It will also work with different flavors of Linux, although some of the names of the packages that are installed here will have different names.
 Consul and Salt will also work on Windows machines.
 
 #### Apache httpd

@@ -8,7 +8,7 @@ provider "digitalocean" {
 
 # Fingerprint of the key, just to have it at hand. Please exchange it with your key
 # "c8:df:df:...:d9:41:ce"
-# public digital ocean SSH key
+# public DigitalOcean SSH key
 resource "digitalocean_ssh_key" "default" {
     name = "Terraform Example"
     public_key = "${file("id_rsa.pub")}"
