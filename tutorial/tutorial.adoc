@@ -6,6 +6,7 @@
 :icons: font
 // using experimental to support btn: macro
 :experimental:
+:imagesdir: tutorial
 
 [[tutorial]]
 # Terraform and Saltstack
