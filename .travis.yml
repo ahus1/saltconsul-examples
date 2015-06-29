@@ -1,6 +1,10 @@
 language: ruby
 rvm:
   - 1.9.3
+addons:
+  apt:
+    packages:
+    - graphviz
 script: ./tutorial/build.sh
 after_success: ./tutorial/update-gh-pages.sh
 env:
