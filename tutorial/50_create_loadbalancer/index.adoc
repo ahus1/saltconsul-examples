@@ -1,4 +1,4 @@
-## Createing the load balancer
+## Creating the load balancer
 
 ### Install consul-template
 
