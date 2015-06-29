@@ -1,0 +1,12 @@
+# Site settings
+title: Salt and Consul Examples
+email: alexander.schwartz@gmx.net
+description: "Showing what Salt and Consul can do for you."
+baseurl: "/saltconsul-examples"
+url: "http://ahus1.github.io"
+twitter_username: ahus1de
+github_username:  ahus1
+
+# Build settings
+markdown: kramdown
+permalink: pretty
