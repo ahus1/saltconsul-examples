@@ -1,19 +1,19 @@
 ifdef::env-github[:outfilesuffix: .adoc]
 :ext-relative: {outfilesuffix}
 
-# Example Project for Terraform, Saltstack, Consul and DigitalOcean
+# Example Project for Terraform, Salt, Consul and DigitalOcean
 
 ## About
 
 This started out as an example on how to use the following three software packages in a tutorial:
 
-   * http://terraform.io/[Terraform^] - spin up new servers and orchestrate resources in the cloud from a simple text file.
+   * http://terraform.io/[HashiCorp's Terraform^] - spin up new servers and orchestrate resources in the cloud from a simple text file.
 
    * https://www.digitalocean.com/[DigitalOcean^] - a cloud provider. Use their API to spin up virtual servers as needed.
 
    * http://docs.saltstack.com/[SaltStack's Salt^] - install and manage software on a server. With it's cloud add-on it can also spin up new servers in the cloud.
 
-   * https://consul.io/[Consul^] - service discovery and monitoring in the cloud.
+   * https://consul.io/[HashiCorp's Consul^] - service discovery and monitoring in the cloud.
 
 This setup will show you a setup where a ngix load balancer distributes the load between multiple web servers.
 
