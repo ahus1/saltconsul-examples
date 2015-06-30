@@ -19,7 +19,8 @@ This started out as an example on how to use the following three software packag
 
 This setup will show you a setup where a ngix load balancer distributes the load between multiple web servers.
 
-There is a <<tutorial/tutorial{ext-relative}#tutorial,full tutorial>> in the `tutorial` sub folder on how to do this.
+There is a http://ahus1.github.io/saltconsul-examples/tutorial.html[full tutorial^] available online.
+The sources for this tutorial are in the `tutorial` sub folder of this project.
 
 For experienced users there is a <<cheatsheet{ext-relative}#cheat-sheet,minimal set of instructions>> in `cheatsheet.adoc`.
 
