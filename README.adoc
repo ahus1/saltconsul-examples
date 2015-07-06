@@ -7,15 +7,15 @@ image:https://travis-ci.org/ahus1/saltconsul-examples.svg["Build Status", link="
 
 ## About
 
-This started out as an example on how to use the following three software packages in a tutorial:
+This started out as an example on how to use the three software packages and a cloud provider in a tutorial:
 
    * http://terraform.io/[HashiCorp's Terraform^] - spin up new servers and orchestrate resources in the cloud from a simple text file.
-
-   * https://www.digitalocean.com/[DigitalOcean^] - a cloud provider. Use their API to spin up virtual servers as needed.
 
    * http://docs.saltstack.com/[SaltStack's Salt^] - install and manage software on a server. With it's cloud add-on it can also spin up new servers in the cloud.
 
    * https://consul.io/[HashiCorp's Consul^] - service discovery and monitoring in the cloud.
+
+   * https://www.digitalocean.com/[DigitalOcean^] - a cloud provider. Use their API to spin up virtual servers as needed.
 
 This setup will show you a setup where a ngix load balancer distributes the load between multiple web servers.
 
