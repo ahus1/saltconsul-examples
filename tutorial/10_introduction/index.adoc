@@ -12,46 +12,9 @@ The following scenario will be implemented step by step: A user will use his or 
 
 
 .Infrastructure Big Picture
-[plantuml,file="uml-example.png"]
+["plantuml", "overview", "png"]
 --
-@startuml
-
-
-actor User
-
-node "Load Balancer" {
-
-[nginx]
-
-[consul] as consullb 
-
-}
-
-node "Webserver 1" {
-
-[consul] as consulws1
-
-[httpd] as httpdws1
-
-}
-
-node "Webserver 2" {
-
-[consul] as consulws2
-
-[httpd] as httpdws2
-
-}
-
-consullb .. consulws2
-consullb .. consulws1
-
-nginx --> httpdws1
-nginx --> httpdws2
-
-User --> nginx
-
-@enduml
+include::overview.puml[]
 --
 
 ### Tools and providers we use

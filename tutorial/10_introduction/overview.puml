@@ -1,0 +1,38 @@
+@startuml
+
+
+actor User
+
+node "Load Balancer" {
+
+[nginx]
+
+[consul] as consullb
+
+}
+
+node "Webserver 1" {
+
+[consul] as consulws1
+
+[httpd] as httpdws1
+
+}
+
+node "Webserver 2" {
+
+[consul] as consulws2
+
+[httpd] as httpdws2
+
+}
+
+consullb .. consulws2
+consullb .. consulws1
+
+nginx --> httpdws1
+nginx --> httpdws2
+
+User --> nginx
+
+@enduml
