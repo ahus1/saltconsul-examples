@@ -5,131 +5,1374 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.2">
-<title>Integration of Keycloak and Dropwizard</title>
+<title>Manage the cloud with Terraform, Salt, Consul and DigitalOcean</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400">
 <link rel="stylesheet" href="css//asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css//coderay-asciidoctor.css">
 </head>
-<body class="book toc2 toc-left">
+<body id="tutorial" class="book toc2 toc-left">
 <div id="header">
-<h1>Integration of Keycloak and Dropwizard</h1>
+<h1>Manage the cloud with Terraform, Salt, Consul and DigitalOcean</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_about">1. About</a>
+<li><a href="#introduction">1. Introduction</a>
 <ul class="sectlevel2">
-<li><a href="#_summary">1.1. Summary</a></li>
-<li><a href="#_things_to_do">1.2. Things to do</a></li>
-<li><a href="#_prerequisites">1.3. Prerequisites</a></li>
-<li><a href="#_parts">1.4. Parts</a></li>
-<li><a href="#_license">1.5. License</a></li>
+<li><a href="#_szenario">1.1. Szenario</a></li>
+<li><a href="#_tools_and_providers_we_use">1.2. Tools and providers we use</a></li>
 </ul>
 </li>
-<li><a href="#_simple_web_application">2. Simple Web Application</a>
+<li><a href="#_getting_started">2. Getting started</a>
 <ul class="sectlevel2">
-<li><a href="#_what_you_can_see_here">2.1. What you can see here</a></li>
-<li><a href="#_how_to_run">2.2. How to run</a></li>
+<li><a href="#_project_s_directory">2.1. Project&#8217;s directory</a></li>
+<li><a href="#_setup_git">2.2. Setup Git</a></li>
+<li><a href="#_create_a_ssh_key">2.3. Create a SSH key</a></li>
+<li><a href="#_register_at_digitalocean">2.4. Register at DigitalOcean</a></li>
+<li><a href="#_preparations_for_terraform">2.5. Preparations for Terraform</a></li>
+<li><a href="#_setup_of_terraform_and_creating_a_first_virtual_machine">2.6. Setup of Terraform and creating a first virtual machine</a></li>
 </ul>
 </li>
-<li><a href="#_keycloak_enabled_web_application">3. Keycloak enabled Web Application</a>
+<li><a href="#_setup_of_salt">3. Setup of Salt</a>
 <ul class="sectlevel2">
-<li><a href="#_what_you_can_see_here_2">3.1. What you can see here</a></li>
-<li><a href="#_things_that_have_been_added_for_keycloak">3.2. Things that have been added for Keycloak</a></li>
-<li><a href="#_how_to_run_2">3.3. How to run</a></li>
+<li><a href="#_startup_the_salt_master_in_the_cloud">3.1. Startup the salt master in the cloud</a></li>
+<li><a href="#_synchronize_a_local_configuration_to_your_salt_master">3.2. Synchronize a local configuration to your salt master</a></li>
 </ul>
 </li>
-<li><a href="#_simple_dropwizard_integration">4. Simple Dropwizard Integration</a>
+<li><a href="#_setup_of_salt_cloud">4. Setup of Salt Cloud</a></li>
+<li><a href="#_create_the_webservers">5. Create the webservers</a>
 <ul class="sectlevel2">
-<li><a href="#_what_you_can_see_here_3">4.1. What you can see here</a></li>
-<li><a href="#_setup_for_keycloak">4.2. Setup for Keycloak</a></li>
-<li><a href="#_how_to_run_3">4.3. How to run</a></li>
+<li><a href="#_start_new_nodes_using_salt">5.1. Start new nodes using Salt</a></li>
+<li><a href="#_install_software_on_newly_created_nodes">5.2. Install software on newly created nodes</a></li>
 </ul>
 </li>
-<li><a href="#_advanced_dropwizard_integration">5. Advanced Dropwizard Integration</a>
+<li><a href="#_setup_monitoring_using_consul">6. Setup monitoring using Consul</a>
 <ul class="sectlevel2">
-<li><a href="#_what_you_can_see_here_4">5.1. What you can see here</a></li>
-<li><a href="#_setup_for_keycloak_2">5.2. Setup for Keycloak</a></li>
-<li><a href="#_how_to_run_4">5.3. How to run</a></li>
+<li><a href="#_basic_setup_of_consul">6.1. Basic setup of Consul</a></li>
+<li><a href="#_add_monitoring_for_the_web_server">6.2. Add monitoring for the web server</a></li>
 </ul>
 </li>
+<li><a href="#_creating_the_load_balancer">7. Creating the load balancer</a>
+<ul class="sectlevel2">
+<li><a href="#_install_consul_template">7.1. Install consul-template</a></li>
+<li><a href="#_install_nginx">7.2. Install nginx</a></li>
+</ul>
+</li>
+<li><a href="#_cleanup_tutorial">8. Cleanup tutorial</a>
+<ul class="sectlevel2">
+<li><a href="#_shutdown_nodes_created_by_salt_cloud">8.1. Shutdown nodes created by Salt Cloud</a></li>
+<li><a href="#_destroy_node_created_with_terraform">8.2. Destroy node created with Terraform</a></li>
+<li><a href="#_double_check_digital_ocean_console">8.3. Double Check Digital Ocean Console</a></li>
+</ul>
+</li>
+<li><a href="#_license">Appendix A: License</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_about">1. About</h2>
+<h2 id="introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is a tutorial to show a step by step example for an initial setup in the cloud. By following this guide step by step you&#8217;ll have a service running in the cloud at the end.</p>
+</div>
+<div class="paragraph">
+<p>If you have questions please contact me (<a href="mailto:alexander.schwartz@gmx.net">alexander.schwartz@gmx.net</a>), discuss it on GitHub (<a href="https://github.com/ahus1/saltconsul-examples/" class="bare">https://github.com/ahus1/saltconsul-examples/</a>) or even submit pull requests.
+You can meet me in person at conferences and user group meetings.</p>
+</div>
+<div class="sect2">
+<h3 id="_szenario">1.1. Szenario</h3>
+<div class="paragraph">
+<p>The following scenario will be implemented step by step: A user will use his or her browser to contact a load balancer. This load balancer will know about two web servers and will forward the requests accordingly. See the following picture for details.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="tutorial/overview.png" alt="Infrastructure Big Picture" width="435" height="332">
+</div>
+<div class="title">Figure 1. Infrastructure Big Picture</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tools_and_providers_we_use">1.2. Tools and providers we use</h3>
+<div class="sect3">
+<h4 id="_digitalocean">1.2.1. DigitalOcean</h4>
+<div class="paragraph">
+<p>There are multiple hosting providers in the cloud. A very simple configuration for a start can be found at <a href="https://www.digitalocean.com/?refcode=532ccb598c03" target="_blank">DigitalOcean</a>.</p>
+</div>
+<div class="paragraph">
+<p>They offer a server starting from 5 USD a month with hourly billing. All functionality is available using an API. DigialOcean has been integrated in several automation tools already.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_hashicorp_s_terraform">1.2.2. Hashicorp&#8217;s Terraform</h4>
+<div class="paragraph">
+<p>The first step is to create a first server in the cloud with an initial setup. A tool that is suited for this <a href="https://www.terraform.io/" target="_blank">Terraform</a>.</p>
+</div>
+<div class="paragraph">
+<p>It allows you to define the resources of your cloud infrastructure in a short and concise format in a text file.
+You can use it to create and update your infrastructure in the cloud.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_saltstack_s_salt">1.2.3. Saltstack&#8217;s Salt</h4>
+<div class="paragraph">
+<p>Once the server has been set up, it needs to be "provisioned", meaning that the all software and configuration settings are being applied. There are tools like Chef, Puppet and Ansible for this. A very recent tool to do this is <a href="http://docs.saltstack.com" target="_blank">Salt</a>.</p>
+</div>
+<div class="paragraph">
+<p>Again, this allows us to define the resource of the cloud infrastructure in a short an concise format in a text file.
+You can use it to create, update and manage your infrastructure in the cloud.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_hashicorp_s_consul">1.2.4. Hashicorp&#8217;s Consul</h4>
+<div class="paragraph">
+<p>Once all the servers have been set up and provisioned, they need to know about each other, and they need to be monitored.
+A tool that is well suited for cloud environments like this is <a href="https://consul.io/" target="_blank">Consul</a>.</p>
+</div>
+<div class="paragraph">
+<p>It runs as a sidecar next to each service and monitors the service and the host it is running on.</p>
+</div>
+<div class="paragraph">
+<p>Using Consul the load balancer will be aware of the different web servers it can forward requests to.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_centos_linux">1.2.5. CentOS Linux</h4>
+<div class="paragraph">
+<p>The Linux distribution used here is <a href="https://www.centos.org/" target="_blank">CentOS Linux Version 7</a>.
+It is derived from the sources of RedHat Enterprise Linux and is freely available.
+The new servers that we spin up here are all based on this distribution.
+I have chosen this Linux distribution as RedHat Enterprise Linux and CentOS are very present in the enterprises I have worked for.
+CentOS might not contain the very latest versions of several software packages, nevertheless this tutorial shows that all this works as well.
+It will also work with different flavors of Linux, although some of the names of the packages that are installed here will have different names.
+Consul and Salt will also work on Windows machines.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_apache_httpd">1.2.6. Apache httpd</h4>
+<div class="paragraph">
+<p><a href="http://httpd.apache.org/" target="_blank">Apache httpd</a> is used as a web server in this setup.
+It will only serve static pages.
+You are free to extend this setup to enhance it to serve dynamic pages i.e. with PHP, or exchange it with an application server like Apache Tomcat.
+The load balancer will still work as expected.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_nginx">1.2.7. NGINX</h4>
+<div class="paragraph">
+<p><a href="http://nginx.com/" target="_blank">NGINX</a> is a web server that can be used to serve static pages, but it is also very popular to act as reverse proxy.
+As a reverse proxy it is the contact for the users on the internet. It forwards all incoming requests to backend web servers.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_started">2. Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to get started you&#8217;ll need to register yourself at the cloud provider DigitalOcean and create yourself a SSH key.</p>
+</div>
+<div class="sect2">
+<h3 id="_project_s_directory">2.1. Project&#8217;s directory</h3>
+<div class="paragraph">
+<p>Please create an empty directory on your hard drive. Please place all files you create inside this directory or in sub directories.</p>
+</div>
+<div class="paragraph">
+<p>Please avoid blanks or other special characters in the path name. This might confuse some programs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_setup_git">2.2. Setup Git</h3>
+<div class="paragraph">
+<p>It&#8217;s a good practice to save intermediate states when you work with source code files. To do this it is very handy to use git.</p>
+</div>
+<div class="paragraph">
+<p>Please install <a href="https://tortoisegit.org/" target="_blank">TortoiseGit</a> to do this. Please choose "Git Create repository here&#8230;&#8203;" from your Explorer&#8217;s context menu to setup a local Git repository. This will not be shared with anybody. But it allows you to go back to any previous step during this tutorial. Please commit the current state of your work after every step to be able to do this.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_ssh_key">2.3. Create a SSH key</h3>
+<div class="paragraph">
+<p>When you want to access a command line on a Linux server, you&#8217;ll use secure shell (SSH) to access it. It is possible to use a username and password combination to log in. The more secure way is to use a public/private key pair. This has the following advantages:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A private key is <em>very</em> long, and therefore it can&#8217;t be guessed.</p>
+</li>
+<li>
+<p>You can give away your public key to multiple servers to log in. Even if one of the servers is being compromised no-one will be able to impersonate yourself with the public key.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To do that please download <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">PuTTY and PuTTYgen</a>. Even if you already have a key pair, use the time to create a key pair just for this tutorial.</p>
+</div>
+<div class="paragraph">
+<p>Once you run it, you&#8217;ll see the following dialoge shown in <a href="#img-puttygen-createkey">Creating a key with puttygen</a>.</p>
+</div>
+<div id="img-puttygen-createkey" class="imageblock">
+<div class="content">
+<img src="tutorial/puttygen_createkey.png" alt="puttygen createkey">
+</div>
+<div class="title">Figure 2. Creating a key with puttygen</div>
+</div>
+<div class="paragraph">
+<p>Please note the following settings:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The key type needs to be set to <code>SSH-2 RSA</code>. DSA will not work as it is not supported by DigitalOcean.</p>
+</li>
+<li>
+<p>The number of bits in a generated key should be set to 2048. This key length will provide a very good level of security.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Press <b class="button">Generate</b> and follow the instruction on the screen to create your key.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll now need to save your private and your public key.</p>
+</div>
+<div class="paragraph">
+<p>There are different formats to save your keys. In these examples you&#8217;ll need the OpenSSH format.
+This tutorial will not use a password for your keys.</p>
+</div>
+<div class="paragraph">
+<p>Please proceed as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create a local file called <code>id_rsa.pub</code> in the project folder. Copy the contents of the field labeled "Public key for pasting into &#8230;&#8203;" into this file. It should be one long line that looks like this:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ssh-rsa AAAAB3NzaC1yc2E...ANqTeH4scPYaQ== rsa-key-20150527</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Choose <span class="menuseq"><span class="menu">Conversions</span>&#160;&#9656; <span class="menuitem">Export OpenSSH key</span></span> to export your private key in the OpenSSH format. Choose <code>id_rsa</code> as a filename and save it the project folder. It should be multiple lines that that looks like this:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-----BEGIN RSA PRIVATE KEY-----
+MIIEoQIBAAKCAQEAxet1I80forMqWAj1gCexHQLoikdlMjUl8vM498vdfqrO1dHE
+...
+ZCRXXL2Q5mlJDSekPLRnrgPervaWBVW8v9Bqgybp9qIigDAQxA==
+-----END RSA PRIVATE KEY-----</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Choose <b class="button">Save private key</b> to export your private key. Choose <code>id_rsa.ppk</code> as a filename and save it the project folder. It should be multiple lines that that looks like this:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>PuTTY-User-Key-File-2: ssh-rsa
+...
+Private-MAC: da8565a7228c35643a0047b001eafafb496e70f1</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Please also save the fingerprint in a separate file. You&#8217;ll need that fingerprint later. Please save it in a file called <code>id_rsa.fingerprint</code>. It should look like this:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ssh-rsa 2048 c8:df:df:...:83:d9:41:ce</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_register_at_digitalocean">2.4. Register at DigitalOcean</h3>
+<div class="paragraph">
+<p>In order to run your virtual machines in the cloud you&#8217;ll need to set up an account with a hosting provider.
+DigitalOcean is used in this example. It specializes in running virtual machines in the cloud. For this they have multiple data centers around the world. In April 2015 they have opened a data center in Frankfurt am Main, Germany. There are almost no additional services except hosting DNS entries. This will give us the clear view we&#8217;ll need today.</p>
+</div>
+<div class="paragraph">
+<p>Please use the following afiliate link to register at DigitalOcean: <a href="https://www.digitalocean.com/?refcode=532ccb598c03" class="bare">https://www.digitalocean.com/?refcode=532ccb598c03</a>.
+Using this link you&#8217;ll automatically receive 10 USD credit. If you have registered before, or if you haven&#8217;t received the credit, you could try to redeem <code>ALLSSD10</code> as a promo code to receive 10 USD credit.</p>
+</div>
+<div class="paragraph">
+<p>Once you have registered you should add some extra safety to your account by activating <a href="http://de.wikipedia.org/wiki/Google_Authenticator" target="_blank">Google Authenticator</a>. When you activate it, you will need in addition to username and password also a token that is created by an app on your mobile phone. This way no-one can log in to your DigitalOcean account with only your username and password.</p>
+</div>
+<div class="paragraph">
+<p>In the <a href="https://cloud.digitalocean.com/settings/security" target="_blank">security settings of DigitalOcean</a> you should set up two-factor-authentication. You&#8217;ll need to <a href="https://support.google.com/accounts/answer/1066447" target="_blank">install Google Authenticator on a mobile device</a> to create a PIN code whenever you log in to your DigitalOcean account.</p>
+</div>
+<div class="paragraph">
+<p>After you have registered you&#8217;ll need to register a payment method, for example a credit card. This is a matter of authenticating yourself.</p>
+</div>
+<div class="paragraph">
+<p>As we&#8217;ll want to script everything we do in the following steps, please create an API token. This needs to be a token with read and write access. You&#8217;ll pass on this token to all programs that will access your account. At any point in time you can revoke it without changing your main password.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_preparations_for_terraform">2.5. Preparations for Terraform</h3>
+<div class="paragraph">
+<p>The next tool we&#8217;ll use will output ANSI escape characters on your screen. While Linux terminals support it, Windows doesn&#8217;t. To fix this please <a href="https://github.com/adoxa/ansicon/releases" target="_blank">download the ANSICON tool</a>.</p>
+</div>
+<div class="paragraph">
+<p>Once downloaded, extract the contents to a <code>bin</code> subfolder of your project&#8217;s directory. Open a command shell and run <code>bin\ansicon</code> once to enable ANSI transformations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_setup_of_terraform_and_creating_a_first_virtual_machine">2.6. Setup of Terraform and creating a first virtual machine</h3>
+<div class="paragraph">
+<p>Terraform can be used to orchestrate multiple resources in the cloud. A text file is used to describe the configuration you want to have and you can then set up of tear down the whole setup in one step.</p>
+</div>
+<div class="paragraph">
+<p>Terraform is distributed as a set of binaries. When you&#8217;re running Windows, download <code>terraform_0.4.2_windows_amd64.zip</code> from Terraform&#8217;s website <a href="https://www.terraform.io/" class="bare">https://www.terraform.io/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Extract all files to a subdirectory called <code>bin</code> in your project&#8217;s folder. Please open a command line in your project&#8217;s folder and run <code>bin\terraform</code>. This will print out short usage instructions on how to use it.</p>
+</div>
+<div class="paragraph">
+<p>Please create a first configuration file for Terraform called <code>saltmaster.tf</code>. In this file we&#8217;ll put all the information necessary to setup the first host in the cloud.</p>
+</div>
+<div class="listingblock">
+<div class="title">saltmaster.tf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="error">#</span> <span class="error">s</span><span class="error">e</span><span class="error">t</span><span class="error">u</span><span class="error">p</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">n</span><span class="error">e</span><span class="error">c</span><span class="error">t</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">t</span><span class="error">o</span> <span class="error">d</span><span class="error">i</span><span class="error">g</span><span class="error">i</span><span class="error">t</span><span class="error">a</span><span class="error">l</span><span class="error">o</span><span class="error">c</span><span class="error">e</span><span class="error">n</span> <span class="error">u</span><span class="error">s</span><span class="error">i</span><span class="error">n</span><span class="error">g</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span> <span class="error">A</span><span class="error">P</span><span class="error">I</span> <span class="error">t</span><span class="error">o</span><span class="error">k</span><span class="error">e</span><span class="error">n</span>
+<span class="error">p</span><span class="error">r</span><span class="error">o</span><span class="error">v</span><span class="error">i</span><span class="error">d</span><span class="error">e</span><span class="error">r</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean</span><span class="delimiter">&quot;</span></span> {
+    <span class="error">t</span><span class="error">o</span><span class="error">k</span><span class="error">e</span><span class="error">n</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">cb93...f552</span><span class="delimiter">&quot;</span></span>
+}
+
+<span class="error">#</span> <span class="error">F</span><span class="error">i</span><span class="error">n</span><span class="error">g</span><span class="error">e</span><span class="error">r</span><span class="error">p</span><span class="error">r</span><span class="error">i</span><span class="error">n</span><span class="error">t</span> <span class="error">o</span><span class="error">f</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>, <span class="error">j</span><span class="error">u</span><span class="error">s</span><span class="error">t</span> <span class="error">t</span><span class="error">o</span> <span class="error">h</span><span class="error">a</span><span class="error">v</span><span class="error">e</span> <span class="error">i</span><span class="error">t</span> <span class="error">a</span><span class="error">t</span> <span class="error">h</span><span class="error">a</span><span class="error">n</span><span class="error">d</span><span class="error">.</span> <span class="error">P</span><span class="error">l</span><span class="error">e</span><span class="error">a</span><span class="error">s</span><span class="error">e</span> <span class="error">e</span><span class="error">x</span><span class="error">c</span><span class="error">h</span><span class="error">a</span><span class="error">n</span><span class="error">g</span><span class="error">e</span> <span class="error">i</span><span class="error">t</span> <span class="error">w</span><span class="error">i</span><span class="error">t</span><span class="error">h</span> <span class="error">y</span><span class="error">o</span><span class="error">u</span><span class="error">r</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>
+<span class="error">#</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">c8:df:df:...:d9:41:ce</span><span class="delimiter">&quot;</span></span>
+<span class="error">#</span> <span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="error">l</span><span class="error">i</span><span class="error">c</span> <span class="error">D</span><span class="error">i</span><span class="error">g</span><span class="error">i</span><span class="error">t</span><span class="error">a</span><span class="error">l</span><span class="error">O</span><span class="error">c</span><span class="error">e</span><span class="error">a</span><span class="error">n</span> <span class="error">S</span><span class="error">S</span><span class="error">H</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span>
+<span class="error">r</span><span class="error">e</span><span class="error">s</span><span class="error">o</span><span class="error">u</span><span class="error">r</span><span class="error">c</span><span class="error">e</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean_ssh_key</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">default</span><span class="delimiter">&quot;</span></span> {
+    <span class="error">n</span><span class="error">a</span><span class="error">m</span><span class="error">e</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Terraform Example</span><span class="delimiter">&quot;</span></span>
+    <span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="error">l</span><span class="error">i</span><span class="error">c</span><span class="error">_</span><span class="error">k</span><span class="error">e</span><span class="error">y</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">${file(</span><span class="delimiter">&quot;</span></span><span class="error">i</span><span class="error">d</span><span class="error">_</span><span class="error">r</span><span class="error">s</span><span class="error">a</span><span class="error">.</span><span class="error">p</span><span class="error">u</span><span class="error">b</span><span class="string"><span class="delimiter">&quot;</span><span class="content">)}</span><span class="delimiter">&quot;</span></span>
+}
+
+<span class="error">#</span> <span class="error">s</span><span class="error">e</span><span class="error">t</span><span class="error">u</span><span class="error">p</span> <span class="error">o</span><span class="error">n</span><span class="error">e</span> <span class="error">s</span><span class="error">m</span><span class="error">a</span><span class="error">l</span><span class="error">l</span> <span class="error">v</span><span class="error">i</span><span class="error">r</span><span class="error">t</span><span class="error">u</span><span class="error">a</span><span class="error">l</span> <span class="error">s</span><span class="error">e</span><span class="error">r</span><span class="error">v</span><span class="error">e</span><span class="error">r</span> <span class="error">i</span><span class="error">n</span> <span class="error">F</span><span class="error">r</span><span class="error">a</span><span class="error">n</span><span class="error">k</span><span class="error">f</span><span class="error">u</span><span class="error">r</span><span class="error">t</span><span class="error">.</span>
+<span class="error">r</span><span class="error">e</span><span class="error">s</span><span class="error">o</span><span class="error">u</span><span class="error">r</span><span class="error">c</span><span class="error">e</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean_droplet</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">master</span><span class="delimiter">&quot;</span></span> {
+    <span class="error">i</span><span class="error">m</span><span class="error">a</span><span class="error">g</span><span class="error">e</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">centos-7-0-x64</span><span class="delimiter">&quot;</span></span>
+    <span class="error">n</span><span class="error">a</span><span class="error">m</span><span class="error">e</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">master</span><span class="delimiter">&quot;</span></span>
+    <span class="error">r</span><span class="error">e</span><span class="error">g</span><span class="error">i</span><span class="error">o</span><span class="error">n</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">nyc2</span><span class="delimiter">&quot;</span></span>
+    <span class="error">s</span><span class="error">i</span><span class="error">z</span><span class="error">e</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">512mb</span><span class="delimiter">&quot;</span></span>
+
+    <span class="error">#</span> <span class="error">i</span><span class="error">n</span><span class="error">s</span><span class="error">t</span><span class="error">a</span><span class="error">l</span><span class="error">l</span> <span class="error">t</span><span class="error">h</span><span class="error">i</span><span class="error">s</span> <span class="error">S</span><span class="error">S</span><span class="error">H</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span> <span class="error">o</span><span class="error">n</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span> <span class="error">m</span><span class="error">a</span><span class="error">c</span><span class="error">h</span><span class="error">i</span><span class="error">n</span><span class="error">e</span> <span class="error">s</span><span class="error">o</span> <span class="error">w</span><span class="error">e</span> <span class="error">c</span><span class="error">a</span><span class="error">n</span> <span class="error">a</span><span class="error">c</span><span class="error">c</span><span class="error">e</span><span class="error">s</span><span class="error">s</span> <span class="error">i</span><span class="error">t</span> <span class="error">l</span><span class="error">a</span><span class="error">t</span><span class="error">e</span><span class="error">r</span>
+    <span class="error">s</span><span class="error">s</span><span class="error">h</span><span class="error">_</span><span class="error">k</span><span class="error">e</span><span class="error">y</span><span class="error">s</span> <span class="error">=</span> [<span class="string"><span class="delimiter">&quot;</span><span class="content">c8:df:df:...:d9:41:ce</span><span class="delimiter">&quot;</span></span>]
+
+    <span class="error">#</span> <span class="error">e</span><span class="error">n</span><span class="error">s</span><span class="error">u</span><span class="error">r</span><span class="error">e</span> <span class="error">t</span><span class="error">h</span><span class="error">a</span><span class="error">t</span> <span class="error">s</span><span class="error">s</span><span class="error">h</span> <span class="error">k</span><span class="error">e</span><span class="error">y</span> <span class="error">i</span><span class="error">s</span> <span class="error">a</span><span class="error">v</span><span class="error">a</span><span class="error">i</span><span class="error">l</span><span class="error">a</span><span class="error">b</span><span class="error">l</span><span class="error">e</span> <span class="error">b</span><span class="error">e</span><span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">e</span> <span class="error">w</span><span class="error">e</span> <span class="error">s</span><span class="error">e</span><span class="error">t</span><span class="error">u</span><span class="error">p</span> <span class="error">t</span><span class="error">h</span><span class="error">i</span><span class="error">s</span> <span class="error">m</span><span class="error">a</span><span class="error">c</span><span class="error">h</span><span class="error">i</span><span class="error">n</span><span class="error">e</span>
+    <span class="error">#</span> <span class="error">a</span><span class="error">s</span> <span class="error">i</span><span class="error">n</span> <span class="error">t</span><span class="error">e</span><span class="error">r</span><span class="error">r</span><span class="error">a</span><span class="error">f</span><span class="error">o</span><span class="error">r</span><span class="error">m</span> <span class="float">0.4</span><span class="error">.</span><span class="integer">2</span> <span class="error">t</span><span class="error">h</span><span class="error">e</span><span class="error">r</span><span class="error">e</span> <span class="error">i</span><span class="error">s</span> <span class="error">n</span><span class="error">o</span> <span class="error">a</span><span class="error">u</span><span class="error">t</span><span class="error">o</span><span class="error">m</span><span class="error">a</span><span class="error">t</span><span class="error">i</span><span class="error">c</span> <span class="error">d</span><span class="error">e</span><span class="error">p</span><span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">e</span><span class="error">n</span><span class="error">c</span><span class="error">y</span> <span class="error">h</span><span class="error">e</span><span class="error">r</span><span class="error">e</span> <span class="error">(</span><span class="error">T</span><span class="error">O</span><span class="error">D</span><span class="error">O</span><span class="error">)</span>
+    <span class="error">d</span><span class="error">e</span><span class="error">p</span><span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">s</span><span class="error">_</span><span class="error">o</span><span class="error">n</span> <span class="error">=</span> [ <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean_ssh_key.default</span><span class="delimiter">&quot;</span></span> ]
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Side note: if you want to put your secret and personal information in a separate file, please see the <a href="https://www.terraform.io/docs/configuration/override.html" target="_blank">override configuration of Terraform</a>. This allows you to have a separate file <code>saltmaster_override.tf</code> with all the secret stuff that you can avoid to check in to a repository.</p>
+</div>
+<div class="listingblock">
+<div class="title">saltmaster_override.tf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json"><span class="error">p</span><span class="error">r</span><span class="error">o</span><span class="error">v</span><span class="error">i</span><span class="error">d</span><span class="error">e</span><span class="error">r</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean</span><span class="delimiter">&quot;</span></span> {
+    <span class="error">t</span><span class="error">o</span><span class="error">k</span><span class="error">e</span><span class="error">n</span> <span class="error">=</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">cb93..f552</span><span class="delimiter">&quot;</span></span>
+}
+
+<span class="error">r</span><span class="error">e</span><span class="error">s</span><span class="error">o</span><span class="error">u</span><span class="error">r</span><span class="error">c</span><span class="error">e</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">digitalocean_droplet</span><span class="delimiter">&quot;</span></span> <span class="string"><span class="delimiter">&quot;</span><span class="content">master</span><span class="delimiter">&quot;</span></span> {
+    <span class="error">s</span><span class="error">s</span><span class="error">h</span><span class="error">_</span><span class="error">k</span><span class="error">e</span><span class="error">y</span><span class="error">s</span> <span class="error">=</span> [<span class="string"><span class="delimiter">&quot;</span><span class="content">c8:df:...:41:ce</span><span class="delimiter">&quot;</span></span>]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now run <code>bin\terraform plan</code> on the command line. When everything in your file is spelled correctly, Terraform prints a plan of the steps it will perform to create the described infrastructure for you.</p>
+</div>
+<div class="paragraph">
+<p>Once you are happy with it, run <code>bin\terraform apply</code>.</p>
+</div>
+<div class="paragraph">
+<p>You will see the output of Terraform on the console. When you check DigitalOcean&#8217;s web console, you&#8217;ll see that the first "Droplet" has been created. In your account settings you also see that a SSH key has been registered with your account.</p>
+</div>
+<div class="paragraph">
+<p>You can see the IP address of the new server in the output of the Terraform command. At any time later you can look up the server DigitalOcean&#8217;s web console, or use <code>bin\terraform show</code> to show the state of the currently created resources.</p>
+</div>
+<div class="paragraph">
+<p>Terraform has created a local file called <code>terraform.tfstate</code> that includes a machine readable description of the previously created resources.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>terraform show</code> to get a list of all resources that have been created.
+If you want to re-create the server, you can use <code>bin\terraform taint &lt;resourcename&gt;</code> and any point.
+To issue this for the machine we have just created use <code>bin\terraform taint digitalocean_droplet.master</code>
+When you the issue another <code>bin\terraform apply</code> command, the resource will be deleted and re-created.</p>
+</div>
+<div class="paragraph">
+<p>Perform the following steps to connect to your new newly created machine:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start Putty.</p>
+</li>
+<li>
+<p>In the first screen with the settings enter the IP address of your newly created machine in the cloud.</p>
+</li>
+<li>
+<p>See <a href="#img-putty-keyauth">Login with a private Putty key</a> on where enter your private key. Then click on <b class="button">Open</b> to connect to your machine.</p>
+</li>
+<li>
+<p>Use <code>root</code> as the user name when you log in. You should not be asked for a password if everything has been setup correctly.</p>
+</li>
+</ol>
+</div>
+<div id="img-putty-keyauth" class="imageblock">
+<div class="content">
+<img src="tutorial/putty_keyauth.png" alt="putty keyauth">
+</div>
+<div class="title">Figure 3. Login with a private Putty key</div>
+</div>
+<div class="paragraph">
+<p>Congratulations! You have now set up automatically a server in the cloud. And as everything has been scripted, it is totally reproducible. Try out yourself with different combinations of <code>apply</code>, <code>taint</code> and <code>destroy</code> to get yourself familiar with this setup.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setup_of_salt">3. Setup of Salt</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_summary">1.1. Summary</h3>
+<h3 id="_startup_the_salt_master_in_the_cloud">3.1. Startup the salt master in the cloud</h3>
 <div class="paragraph">
-<p>This project shows how JBoss Keycloak and Dropwizard can be used together.</p>
+<p>Terraform is a great tool to setup servers from scratch. This is why we used it in the previous example. But it has only limited capabilities to install software on the new server and to keep that up-to-date.</p>
 </div>
 <div class="paragraph">
-<p><a href="http://keycloak.org" target="_blank">JBoss Keycloak</a> provides a standalone OAuth 2.0 and Open ID Connect server. It handles user credentials for you application, so you can focus on business requirements.</p>
+<p>We will apply the existing capabilities of Terraform to install a tool that is better suited to do that. This tool will be Salt. Like Terraform Salt takes the configuration of the new machine in a declarative form. Salt competes with Puppet, Chef and Ansible to install and configure software. Salt has been chosen as it support a very declarative syntax to define the state of software and configuration files. It is also known to scale up to many thousands of servers.</p>
 </div>
 <div class="paragraph">
-<p><a href="http://dropwizard.io" target="_blank">Dropwizard</a> is a Java framework for developing ops-friendly, high-performance, RESTful web services.</p>
+<p>First you&#8217;ll need to tell Terraform how to connect to the new server. Do this by adding a <code>connection</code> to your Terraform configuration file.</p>
 </div>
 <div class="paragraph">
-<p><strong>TL;DR:</strong> The module <a href="#keycloak-dropwizard-jaxrs">keycloak-dropwizard-jaxrs</a>
-shows how to use Dropwizard&#8217;s <code>@Auth</code> annotation with Keycloak using a full OAuth flow.</p>
+<p>A set of configuration files will be needed on the Salt master, both in <code>/etc/salt</code> (for configuration files) and <code>/srv</code> (for state files describing the to-be state of your upcoming setup). It will also copy the SSH key you&#8217;ve created to the cloud as we&#8217;ll use it to setup the additional servers.</p>
 </div>
 <div class="paragraph">
-<p>At the time I write this there is no open source integration of the two.</p>
+<p>There is a procedure to boostrap salt on an empty machine that can be run as a single line of code on the command line. A second command runs the provisioning of the master.</p>
+</div>
+<div class="listingblock">
+<div class="title">saltmaster.tf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>resource "digitalocean_droplet" "master" {
+...
+    connection {
+      type = "ssh"
+      host = "${digitalocean_droplet.master.ipv4_address}"
+      port = 22
+      timeout = "5m"
+      user = "root"
+      key_file = "id_rsa"
+    }
+
+    provisioner "local-exec" {
+        command = "echo bin\ssh root@${digitalocean_droplet.master.ipv4_address} -i id_rsa &gt; master.bat "
+    }
+
+    provisioner "local-exec" {
+        command = "echo bin\rsync -vr -e 'ssh -i id_rsa' master/srv root@${digitalocean_droplet.master.ipv4_address}:/ &gt; sync.bat "
+    }
+
+    # ensure that SSH Keys are copied to the salt master in the next step
+    provisioner "local-exec" {
+        command = "if not exist master\srv\salt\cloud\conf (mkdir master\srv\salt\cloud\conf)"
+    }
+    provisioner "local-exec" {
+        command = "copy /y id_rsa* master\srv\salt\cloud\conf"
+    }
+
+    # copy copntents of master/srv to the server
+    provisioner "file" {
+        source = "master/srv"
+        destination = "/"
+    }
+
+
+    # copy file with additional provisioning commands to the server
+    provisioner "file" {
+        source = "complete-bootstrap.sh"
+        destination = "/tmp/complete-bootstrap.sh"
+    }
+
+    # install salt minion and master
+    provisioner "remote-exec" {
+        inline = [
+            # install salt-minion and salt-master, but don't start services
+            "curl -L https://bootstrap.saltstack.com | sh -s -- -M -X -A localhost",
+            # work around possible missing executable flag
+            "cat /tmp/complete-bootstrap.sh | sh -s"
+          ]
+    }
+
+...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use the terraform commands <code>taint</code> and <code>apply</code> to recreate your server in the cloud. You&#8217;ll now have a running salt master! This will be the command and control server we&#8217;ll use in the following steps to setup the full cluster presented in the chapter <a href="#introduction">Introduction</a>.</p>
+</div>
+<div class="paragraph">
+<p>Besides installing salt on this master server, salt the defined configuration for the master server as the <code>minion.conf</code> contained <code>startup_states: highstate</code>.</p>
+</div>
+<div class="paragraph">
+<p>Please use SSH to log in to the server and have a look at the files.
+A <code>master.bat</code> file has been created automatically with the master&#8217;s most recent IP address.</p>
+</div>
+<div class="paragraph">
+<p>Issue the following command to check if everything worked fine:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># ensure that the minion on the master connected successfully
+salt '*' test.ping</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># run a highstate command to double-check everything worked
+salt '*' state.highstate</pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_things_to_do">1.2. Things to do</h3>
+<h3 id="_synchronize_a_local_configuration_to_your_salt_master">3.2. Synchronize a local configuration to your salt master</h3>
 <div class="paragraph">
-<p>Over time the Sources in the module <code>keycloak-dropwizard-jaxrs</code> will probably evolve to a ready-to-user Dropwizard module.</p>
+<p>You can continue editing the files in the local <code>master/srv</code> folder and sync it to the salt master.</p>
+</div>
+<div class="paragraph">
+<p>Download <a href="https://www.itefix.net/content/cwrsync-free-edition" target="_blank">rsync for windows</a> and unpack it to the <code>bin</code> folder.</p>
+</div>
+<div class="paragraph">
+<p>Use the <code>sync.bat</code> file to sync any changes you have made to the <code>srv</code> folder to the salt master.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setup_of_salt_cloud">4. Setup of Salt Cloud</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now it&#8217;s time to teach Salt how to spin up more servers.</p>
+</div>
+<div class="paragraph">
+<p>The start of the Salstack configuration is the file <code>top.sls</code> in the folder <code>salt</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/top.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
+  <span class="key"><span class="delimiter">'</span><span class="content">master</span><span class="delimiter">'</span></span>:
+     - <span class="string"><span class="content">cloud</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This should be read as follows: For the <code>base</code> configuration, when on the server <code>master</code>, please make sure that the state defined in <code>salt.cloud</code> is applied, when the <code>state.highstate</code> command is issued. The</p>
+</div>
+<div class="paragraph">
+<p>The state <code>salt.cloud</code> in this case is the file <code>cloud.sls</code> in the directory <code>salt</code>.
+The syntax is that different tokens are delimited with a dot (&#8220;.&#8221;). The elements at the beginning are directories. The last element can be a directory or a file. If it is a directory, Salt will look up the <code>init.sls</code> file. If it is a file, Salt will look for a file with the token name plus <code>.sls</code> at the end.</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/cloud/init.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="comment"># install a package with the same name as the state</span>
+<span class="key">salt-cloud</span>:
+  <span class="error">pkg.installed</span>
+
+<span class="comment"># install a file with the same name as the state</span>
+<span class="key">/root/.ssh/id_rsa</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">makedirs: True</span></span>
+    - <span class="string"><span class="content">source: salt://cloud/conf/id_rsa</span></span>
+    - <span class="string"><span class="content">mode: 600</span></span>
+
+<span class="key">/root/.ssh/id_rsa.pub</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">makedirs: True</span></span>
+    - <span class="string"><span class="content">source: salt://cloud/conf/id_rsa.pub</span></span>
+    - <span class="string"><span class="content">mode: 600</span></span>
+
+
+<span class="key">/etc/salt/cloud.providers.d/digitalocean.conf</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://cloud/conf/digitalocean.conf</span></span>
+    - <span class="string"><span class="content">template: jinja</span></span>
+
+<span class="key">/etc/salt/cloud.profiles.d/centos-digitalocean.conf</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://cloud/conf/centos-digitalocean.conf</span></span>
+
+<span class="comment"># run a command, but only if the file doesn't exist yet</span>
+<span class="key">bootstrap</span>:
+  <span class="key">cmd.run</span>:
+    - <span class="string"><span class="content">name: curl -L https://bootstrap.saltstack.com -o /etc/salt/cloud.deploy.d/bootstrap-salt.sh</span></span>
+    - <span class="string"><span class="content">creates: /etc/salt/cloud.deploy.d/bootstrap-salt.sh</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here are the contents of the files referenced:</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/cloud/conf/digitalocean.conf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">my-digitalocean-config</span>:
+  <span class="key">provider</span>: <span class="string"><span class="content">digital_ocean</span></span>
+  <span class="key">personal_access_token</span>: <span class="string"><span class="content">{{ salt['pillar.get']('digitalocean:personal_access_token', 'undefined') }}</span></span>
+  <span class="key">ssh_key_file</span>: <span class="string"><span class="content">/root/.ssh/id_rsa</span></span>
+  <span class="key">ssh_key_names</span>: <span class="string"><span class="content">Terraform Example</span></span>
+  <span class="key">location</span>: <span class="string"><span class="content">New York 2</span></span>
+  <span class="key">minion</span>:
+    <span class="key">startup_states</span>: <span class="string"><span class="content">highstate</span></span>
+    {<span class="error">% if salt['grains.get']('ip4_interfaces:eth0', None) -%}</span>
+    <span class="key">master</span>: <span class="string"><span class="content">{{ grains['ip4_interfaces']['eth0'][0] }}</span></span>
+    {<span class="error">%- endif -%}</span>
+    {<span class="error">%- if salt['grains.get']('ip4_interfaces:enp0s8', None) -%}</span>
+    <span class="key">master</span>: <span class="string"><span class="content">{{ grains['ip4_interfaces']['enp0s8'][0] }}</span></span>
+    {<span class="error">%- endif %}</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/cloud/centos-digitalocean.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">centos-digitalocean</span>:
+  <span class="key">provider</span>: <span class="string"><span class="content">my-digitalocean-config</span></span>
+  <span class="key">image</span>: <span class="string"><span class="content">centos-7-0-x64</span></span>
+  <span class="key">size</span>: <span class="string"><span class="content">512MB</span></span>
+  <span class="key">location</span>: <span class="string"><span class="content">New York 2</span></span>
+  <span class="key">private_networking</span>: <span class="string"><span class="content">True</span></span>
+  <span class="key">deploy</span>: <span class="string"><span class="content">True</span></span>
+  <span class="key">backups_enabled</span>: <span class="string"><span class="content">False</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As Saltstack wil setup some new servers with DigitalOcean for you, it will also need your access token like Terraform did.</p>
+</div>
+<div class="paragraph">
+<p>Environment specific information is being held in a pillar. Please place it within a file called <code>cloudcredentials.sls</code> within the <code>srv/pillar</code> directory.</p>
+</div>
+<div class="listingblock">
+<div class="title">pillar/cloudcredentials.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">digitalocean</span>:
+  <span class="key">personal_access_token</span>: <span class="string"><span class="content">cb93...f552</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You then reference this file in the <code>top.sls</code> file in the <code>srv/pillar</code> directory.</p>
+</div>
+<div class="listingblock">
+<div class="title">pillar/top.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
+  <span class="key"><span class="delimiter">'</span><span class="content">master</span><span class="delimiter">'</span></span>:
+    - <span class="string"><span class="content">cloudcredentials</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration ensures, that the secret API key is only available on the master.</p>
+</div>
+<div class="paragraph">
+<p>The difference between the salt states and the pillars is as follows: the contents of all states are available to all minions of a Salt master.
+But the contents of the pillars are delivered to the minions on a need-to-know basis.
+Therefore pillars will contain the secret bits of the configuration: passwords and keys.</p>
+</div>
+<div class="paragraph">
+<p>You can test this as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell"># show list of available commands of salt-cloud
+salt-cloud -h
+# show the setup of providers (reads local configuration only)
+# should show my-digitalocean-config with digitalocean
+salt-cloud --list-providers
+# show the setup of profiles with digitalocean (ready local configuration only)
+# should show centos-digitalocean with my-digitalocean-config
+salt-cloud --list-profiles=my-digitalocean-config
+# show available locations for provider digitalocean
+salt-cloud --list-locations=my-digitalocean-config
+# show a list of instances in the cloud (accesses the cloud and uses the key, should be empty now)
+salt-cloud -Q</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_the_webservers">5. Create the webservers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we have our Salt master running in the cloud as a command and control server. Using this as a stepping stone, we&#8217;ll spin up some web servers.</p>
+</div>
+<div class="sect2">
+<h3 id="_start_new_nodes_using_salt">5.1. Start new nodes using Salt</h3>
+<div class="paragraph">
+<p>Now you can tell Salt to spin up new servers. This is done using the command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt-cloud -l debug -p centos-digitalocean web1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will see that Salt talks to the DigitalOcean API and creates a VM like Terraform has done before.
+The benefit is, that the new VM (a "minion") is controlled by our master server.</p>
+</div>
+<div class="paragraph">
+<p>Use the command <code>salt-key</code> you&#8217;ll see all minions that are registered with our master.</p>
+</div>
+<div class="paragraph">
+<p>Using <code>salt '*' test.ping</code> the master shows all servers that are reachable.</p>
+</div>
+<div class="paragraph">
+<p>With <code>salt-cloud -Q</code> you&#8217;ll see up-to-date information about the currently running servers running in the cloud.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_prerequisites">1.3. Prerequisites</h3>
+<h3 id="_install_software_on_newly_created_nodes">5.2. Install software on newly created nodes</h3>
 <div class="paragraph">
-<p>These examples need a local JBoss Keycloak instance with Realm <code>test</code> and user <code>demo</code> with password <code>demo</code>.</p>
+<p>Now we&#8217;ll define a state to describe what a web server should do. As a very simple example it will contain an Apache httpd web server and a simple HTML page that is being served. It will contain a little bit of dynamic content so that we&#8217;ll know which server create the page once we have the load balancer in place.</p>
 </div>
 <div class="paragraph">
-<p>Please download the Keycloak distribution version 1.5.0 from <a href="http://keycloak.org" class="bare">http://keycloak.org</a> and extract it to a subfolder <code>keycloak-server</code> of this directory.
-Then call <code>keycloak-server.bat</code> to import an already configured realm. Using this startup file the configuration will be reset every time you start Keycloak.</p>
+<p>Create a file <code>web/init.sls</code> with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="title">web/init.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="comment"># install the web server package</span>
+<span class="key">httpd</span>:
+  <span class="key">pkg.installed</span>:
+    - <span class="string"><span class="content">name: httpd</span></span>
+  <span class="key">service.running</span>:
+    - <span class="string"><span class="content">enable: true</span></span>
+
+<span class="key">/var/www/html/index.html</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">template: jinja</span></span>
+    - <span class="string"><span class="content">source: salt://web/conf/index.html</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This file will be evaluated on each web server using salt, and then saved as a static file in the httpd&#8217;s folder.
+It will contain the public IP address of the server that is being retrieved from the Salt&#8217;s context.</p>
+</div>
+<div class="listingblock">
+<div class="title">web/conf/index.html</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;html&gt;</span>
+    <span class="tag">&lt;body&gt;</span>
+        <span class="tag">&lt;p&gt;</span>Hello world!<span class="tag">&lt;/p&gt;</span>
+        <span class="tag">&lt;p&gt;</span>This is
+
+            {% if salt['grains.get']('ip4_interfaces:eth0', None) %}
+            {{ grains['ip4_interfaces']['eth0'][0] }}
+            {% endif %}
+
+            {% if salt['grains.get']('ip4_interfaces:enp0s8', None) %}
+            {{ grains['ip4_interfaces']['enp0s8'][0] }}
+            {% endif %}
+
+            talking!<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now tell Salt to run this state on all servers called <code>web*</code> that we will fire up in a second.</p>
+</div>
+<div class="listingblock">
+<div class="title">top.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
+  <span class="error">...</span>
+  <span class="key"><span class="delimiter">'</span><span class="content">web*</span><span class="delimiter">'</span></span>:
+     - <span class="string"><span class="content">web</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run this state on the the server start the command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt '*' state.highstate</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will trigger all states on all registered servers. This will install the web server packages on the newly created server <code>web1</code>.</p>
+</div>
+<div class="paragraph">
+<p>Now point your browser to the IP address of your server in your browser. You&#8217;ll now see the web page that we have deployed to the server.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s install another server with just two more commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt-cloud -l debug -p centos-digitalocean web2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As in the <code>digitalocean.conf</code> file contains the setting <code>startup_states: highstate</code>, the new server will be installed with the latest configuration settings on startup.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setup_monitoring_using_consul">6. Setup monitoring using Consul</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_basic_setup_of_consul">6.1. Basic setup of Consul</h3>
+<div class="paragraph">
+<p>Consul will do the monitoring and service discovery in our setup.
+It will know about all the web services that we have running, and monitors that they work properly.</p>
+</div>
+<div class="paragraph">
+<p>Consul consists of servers and agents. They differ only by configuration.
+In this setup there will be one server located on the salt master.
+In a production setup you&#8217;ll want to have a high available cluster.</p>
+</div>
+<div class="paragraph">
+<p>Again we start with the <code>top.sls</code> configuration to register the new state. This time for all of our servers.</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/top.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
+  <span class="error">...</span>
+  <span class="key"><span class="delimiter">'</span><span class="content">*</span><span class="delimiter">'</span></span>:
+     - <span class="string"><span class="content">consul</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/consul/init.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">consul</span>:
+  <span class="key">pkg.installed</span>:
+    - <span class="string"><span class="content">sources:</span></span>
+      - <span class="string"><span class="content">consul: salt://consul/rpm/consul-0.5.2-1.el7.centos.x86_64.rpm</span></span>
+      - <span class="string"><span class="content">consul-ui: salt://consul/rpm/consul-ui-0.5.2-1.el7.centos.x86_64.rpm</span></span>
+  <span class="key">service.running</span>:
+    - <span class="string"><span class="content">enable: True</span></span>
+<span class="comment"># don't use reload here as not all configuration elements can be reloaded</span>
+<span class="comment"># and a non-working configuration will not be reloaded</span>
+<span class="comment">#    - reload: True</span>
+    - <span class="string"><span class="content">watch:</span></span>
+      - <span class="string"><span class="content">pkg: consul</span></span>
+
+<span class="key">/etc/consul/consul-ui-service.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul/conf/consul-ui-service.json</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="key">/etc/consul/common.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">template: jinja</span></span>
+    - <span class="string"><span class="content">source: salt://consul/conf/common.json</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/consul/conf/common.json</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  {<span class="error">%</span> <span class="error">i</span><span class="error">f</span> <span class="error">s</span><span class="error">a</span><span class="error">l</span><span class="error">t</span>[<span class="error">'</span><span class="error">g</span><span class="error">r</span><span class="error">a</span><span class="error">i</span><span class="error">n</span><span class="error">s</span><span class="error">.</span><span class="error">g</span><span class="error">e</span><span class="error">t</span><span class="error">'</span>]<span class="error">(</span><span class="error">'</span><span class="error">i</span><span class="error">p</span><span class="integer">4</span><span class="error">_</span><span class="error">i</span><span class="error">n</span><span class="error">t</span><span class="error">e</span><span class="error">r</span><span class="error">f</span><span class="error">a</span><span class="error">c</span><span class="error">e</span><span class="error">s</span>:<span class="error">e</span><span class="error">t</span><span class="error">h</span><span class="integer">0</span><span class="error">'</span>, <span class="error">N</span><span class="error">o</span><span class="error">n</span><span class="error">e</span><span class="error">)</span> <span class="error">%</span>}
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">bind_addr</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ grains['ip4_interfaces']['eth0'][0] }}</span><span class="delimiter">&quot;</span></span>,
+  {<span class="error">%</span> <span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">i</span><span class="error">f</span> <span class="error">%</span>}
+  {<span class="error">%</span> <span class="error">i</span><span class="error">f</span> <span class="error">s</span><span class="error">a</span><span class="error">l</span><span class="error">t</span>[<span class="error">'</span><span class="error">g</span><span class="error">r</span><span class="error">a</span><span class="error">i</span><span class="error">n</span><span class="error">s</span><span class="error">.</span><span class="error">g</span><span class="error">e</span><span class="error">t</span><span class="error">'</span>]<span class="error">(</span><span class="error">'</span><span class="error">i</span><span class="error">p</span><span class="integer">4</span><span class="error">_</span><span class="error">i</span><span class="error">n</span><span class="error">t</span><span class="error">e</span><span class="error">r</span><span class="error">f</span><span class="error">a</span><span class="error">c</span><span class="error">e</span><span class="error">s</span>:<span class="error">e</span><span class="error">n</span><span class="error">p</span><span class="integer">0</span><span class="error">s</span><span class="integer">8</span><span class="error">'</span>, <span class="error">N</span><span class="error">o</span><span class="error">n</span><span class="error">e</span><span class="error">)</span> <span class="error">%</span>}
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">bind_addr</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ grains['ip4_interfaces']['enp0s8'][0] }}</span><span class="delimiter">&quot;</span></span>,
+  {<span class="error">%</span> <span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">i</span><span class="error">f</span> <span class="error">%</span>}
+  {<span class="error">%</span> <span class="error">i</span><span class="error">f</span> <span class="error">s</span><span class="error">a</span><span class="error">l</span><span class="error">t</span>[<span class="error">'</span><span class="error">g</span><span class="error">r</span><span class="error">a</span><span class="error">i</span><span class="error">n</span><span class="error">s</span><span class="error">.</span><span class="error">g</span><span class="error">e</span><span class="error">t</span><span class="error">'</span>]<span class="error">(</span><span class="error">'</span><span class="error">h</span><span class="error">o</span><span class="error">s</span><span class="error">t</span><span class="error">'</span>, <span class="error">N</span><span class="error">o</span><span class="error">n</span><span class="error">e</span><span class="error">)</span> <span class="error">=</span><span class="error">=</span> <span class="error">'</span><span class="error">m</span><span class="error">a</span><span class="error">s</span><span class="error">t</span><span class="error">e</span><span class="error">r</span><span class="error">'</span> <span class="error">%</span>}
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">client_addr</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">0.0.0.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">bootstrap</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">server</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>,
+  {<span class="error">%</span> <span class="error">e</span><span class="error">l</span><span class="error">s</span><span class="error">e</span> <span class="error">%</span>}
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">start_join</span><span class="delimiter">&quot;</span></span>: [ <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ grains['master'] }}</span><span class="delimiter">&quot;</span></span> ],
+  {<span class="error">%</span> <span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">i</span><span class="error">f</span> <span class="error">%</span>}
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">rejoin_after_leave</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To show how to add monitoring consul will monitor its own web console using this service plus check.</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/consul/conf/consul-ui-service.json</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">service</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">consul-ui</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">tags</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">consul</span><span class="delimiter">&quot;</span></span>], <span class="key"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span>: <span class="integer">8500</span>},
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">check</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">HTTP API on port 8500</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">http</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8500</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">service_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">consul-ui</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">interval</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">10s</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">timeout</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1s</span><span class="delimiter">&quot;</span></span>
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Apply this configuration to you configuration by running:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt '*' state.highstate</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Salt will show you the applied settings.
+You can now look at consul&#8217;s console using a web browser and the salt master&#8217;s IP: <a href="http://&lt;master&gt;:8500/" class="bare">http://&lt;master&gt;:8500/</a>.</p>
+</div>
+<div id="consul-ui" class="imageblock">
+<div class="content">
+<img src="tutorial/consul-ui.png" alt="consul ui">
+</div>
+<div class="title">Figure 4. Web UI of Consul</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_parts">1.4. Parts</h3>
+<h3 id="_add_monitoring_for_the_web_server">6.2. Add monitoring for the web server</h3>
 <div class="paragraph">
-<p>This example will guide you through setting up JBoss Keycloak in several configurations:</p>
+<p>As part of our web configuration please install an additional file <code>httpd.json</code> that will contain the service plus monitoring instructions.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Simple Integration for <a href="http://dropwizard.io" target="_blank">Dropwizard</a><br>
-see <a href="keycloak-dropwizard-jetty/README.html#keycloak-dropwizard-jetty">module keycloak-dropwizard-jetty</a>.</p>
-</li>
-<li>
-<p>Advanced Integration <a href="http://dropwizard.io" target="_blank">Dropwizard</a><br>
-see <a href="keycloak-dropwizard-jaxrs/README.html#keycloak-dropwizard-jaxrs">module keycloak-dropwizard-jaxrs</a>.</p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="title">salt/web/init.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">/etc/consul/httpd.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://web/conf/httpd.json</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span></code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>For completeness and an even simple setup a standard Servlet configuration is also included (without and with Keycloak):</p>
+<p>And here the file:</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Simple Servlet<br>
-see <a href="simple-war/README.html#simple-war">module simple-war</a>.</p>
-</li>
-<li>
-<p>Servlet with Keycloak<br>
-see <a href="keycloak-war/README.html#keycloak-war">module keycloak-war</a>.</p>
-</li>
-</ul>
+<div class="listingblock">
+<div class="title">salt/web/conf/httpd.json</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">service</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">tags</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>], <span class="key"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span>: <span class="integer">80</span>},
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">check</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">HTTP API on port 80</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">http</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:80</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">service_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">interval</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">10s</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">timeout</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1s</span><span class="delimiter">&quot;</span></span>
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As soon as you deploy this configuration using Salt, you&#8217;ll see that this service appears in the Consul UI.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt '*' state.highstate</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Congratulations! You now have monitoring up and running. And Consul knows about all the hosts
+that are running you web service.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_the_load_balancer">7. Creating the load balancer</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_install_consul_template">7.1. Install consul-template</h3>
+<div class="paragraph">
+<p>For our load balancer will need a configuration file that is written dynamically with the latest information available for our web nodes.
+This job is done by <a href="https://github.com/hashicorp/consul-template" target="_blank">consul-template</a>.</p>
+</div>
+<div class="paragraph">
+<p>This consists of a go binary, a configuration file for <code>systemd</code> and a configuration file for consul-template itself.</p>
+</div>
+<div class="paragraph">
+<p>To install this, there is the following state:</p>
+</div>
+<div class="listingblock">
+<div class="title">top.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
+  <span class="error">...</span>
+  <span class="key"><span class="delimiter">'</span><span class="content">lb*</span><span class="delimiter">'</span></span>:
+     - <span class="string"><span class="content">consul-template</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">consul-template/init.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">/usr/lib/systemd/system/consul-template.service</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul-template/conf/consul-template.service</span></span>
+
+<span class="key">/etc/consul-template</span>:
+  <span class="key">file.recurse</span>:
+    - <span class="string"><span class="content">source: salt://consul-template/templates</span></span>
+    - <span class="string"><span class="content">makedirs: True</span></span>
+
+<span class="key">/usr/bin/consul-template</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul-template/bin/consul-template</span></span>
+    - <span class="string"><span class="content">mode: 755</span></span>
+  <span class="key">service.running</span>:
+    - <span class="string"><span class="content">enable: True</span></span>
+    - <span class="string"><span class="content">name: consul-template</span></span>
+    - <span class="string"><span class="content">watch:</span></span>
+      - <span class="string"><span class="content">file: /usr/bin/consul-template</span></span>
+      - <span class="string"><span class="content">file: /etc/consul-template</span></span>
+      - <span class="string"><span class="content">file: /usr/lib/systemd/system/consul-template.service</span></span>
+    - <span class="string"><span class="content">require:</span></span>
+      - <span class="string"><span class="content">file: /usr/bin/consul-template</span></span>
+      - <span class="string"><span class="content">file: /etc/consul-template</span></span>
+      - <span class="string"><span class="content">file: /usr/lib/systemd/system/consul-template.service</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Together with its configuration files:</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/consul-template/conf/consul-template.service</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>[Unit]
+Description=Consul Template is a tool to keep configuration files up to date
+Documentation=https://github.com/hashicorp/consul-template
+After=consul.service
+Wants=consul.service
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/bin/consul-template -config=/etc/consul-template
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/consul-template/templates/template.conf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code>consul = "127.0.0.1:8500"
+retry = "10s"
+max_stale = "10m"
+log_level = "info"
+
+syslog {
+  enabled = true
+  facility = "LOCAL5"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can start the new load balancer node and provision it with these two commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt-cloud -l debug -p centos-digitalocean lb1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use the following command to have a look where this service is running:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt '*' service.status consul-template</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the next step we&#8217;ll use this service to keep the configuration file of our load balancer up-to-date.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_license">1.5. License</h3>
+<h3 id="_install_nginx">7.2. Install nginx</h3>
+<div class="paragraph">
+<p>Now we have multiple web servers running. Now we need to place a load balancer in front of them. The software we can use as a load balancer is nginx (pronounced "engine-X").</p>
+</div>
+<div class="paragraph">
+<p>The installation is straight-forward like installing a web server. First create a state:</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/lb/init.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="comment"># install the web server package along with its configuration file</span>
+<span class="key">nginx</span>:
+  <span class="key">pkg.installed</span>:
+    - <span class="string"><span class="content">name: nginx</span></span>
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">name: /etc/nginx/nginx.conf</span></span>
+    - <span class="string"><span class="content">source: salt://lb/conf/nginx.conf</span></span>
+    - <span class="string"><span class="content">require:</span></span>
+      - <span class="string"><span class="content">pkg: nginx</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: nginx</span></span>
+  <span class="key">service.running</span>:
+    - <span class="string"><span class="content">enable: true</span></span>
+    - <span class="string"><span class="content">require:</span></span>
+      - <span class="string"><span class="content">file: /etc/consul-template/nginx-consul.conf</span></span>
+      - <span class="string"><span class="content">service: consul-template</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="comment"># configure consul-template to keep a file up-to-date with all upstream servers</span>
+<span class="key">/etc/consul-template/nginx-consul.conf</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://lb/conf/nginx-consul.conf</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul-template</span></span>
+    - <span class="string"><span class="content">require:</span></span>
+      - <span class="string"><span class="content">file: nginx</span></span>
+      - <span class="string"><span class="content">file: /etc/nginx/conf.d/upstream.ctmpl</span></span>
+
+<span class="comment"># this is the template file for the upstream servers</span>
+<span class="key">/etc/nginx/conf.d/upstream.ctmpl</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://lb/conf/upstream.ctmpl</span></span>
+    - <span class="string"><span class="content">require:</span></span>
+      - <span class="string"><span class="content">pkg: nginx</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul-template</span></span>
+
+<span class="comment"># add monitoring for nginx in consul</span>
+<span class="key">/etc/consul/nginx.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://lb/conf/nginx.json</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the following referenced files:</p>
+</div>
+<div class="listingblock">
+<div class="title">salt/lb/conf/nginx.conf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="plain"># For more information on configuration, see:
+#   * Official English Documentation: http://nginx.org/en/docs/
+#   * Official Russian Documentation: http://nginx.org/ru/docs/
+
+user  nginx;
+worker_processes  1;
+
+error_log  /var/log/nginx/error.log;
+#error_log  /var/log/nginx/error.log  notice;
+#error_log  /var/log/nginx/error.log  info;
+
+pid        /run/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] &quot;$request&quot; '
+                      '$status $body_bytes_sent &quot;$http_referer&quot; '
+                      '&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    index   index.html index.htm;
+
+    # Load modular configuration files from the /etc/nginx/conf.d directory.
+    # See http://nginx.org/en/docs/ngx_core_module.html#include
+    # for more information.
+    include /etc/nginx/conf.d/*.conf;
+
+    server {
+        listen       9090 default_server;
+        server_name  localhost;
+        root         /usr/share/nginx/html;
+
+        #access_log  /var/log/nginx/host.access.log  main;
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        location / {
+            proxy_pass http://web;
+        }
+
+        # redirect server error pages to the static page /40x.html
+        #
+        error_page  404              /404.html;
+        location = /404.html {
+        }
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/lb/conf/nginx.json</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">service</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">lb</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">tags</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>], <span class="key"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span>: <span class="integer">9090</span>},
+
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">check</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">HTTP API on port 9090</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">http</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:9090</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">service_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">lb</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">interval</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">10s</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">timeout</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1s</span><span class="delimiter">&quot;</span></span>
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/lb/conf/nginx-consul.conf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="plain">template {
+  source = &quot;/etc/nginx/conf.d/upstream.ctmpl&quot;
+  destination = &quot;/etc/nginx/conf.d/upstream.conf&quot;
+  # adding &quot;true&quot; to allow keep consul-template running
+  # even if nginx restart fails
+  command = &quot;service nginx restart || true&quot;
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/lb/conf/upstream.ctmpl</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="plain">upstream web {
+{{range service &quot;web&quot;}}
+    server {{.Address}};
+{{end}}
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">salt/lb/conf/nginx-consul.conf</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="plain">template {
+  source = &quot;/etc/nginx/conf.d/upstream.ctmpl&quot;
+  destination = &quot;/etc/nginx/conf.d/upstream.conf&quot;
+  # adding &quot;true&quot; to allow keep consul-template running
+  # even if nginx restart fails
+  command = &quot;service nginx restart || true&quot;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then associate this state with a load balancer node:</p>
+</div>
+<div class="listingblock">
+<div class="title">top.sls</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
+  <span class="error">...</span>
+  <span class="key"><span class="delimiter">'</span><span class="content">lb*</span><span class="delimiter">'</span></span>:
+     - <span class="string"><span class="content">lb</span></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Publish this configuration to your nodes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>salt '*' state.highstate</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Point your browser to <code><a href="http://&lt;LB-IPADDRESS&gt;:9090/" class="bare">http://&lt;LB-IPADDRESS&gt;:9090/</a></code> to see the website loadbalancing over multiple servers.
+Every time you reload your browser, nginx will direct the request to a different server and you&#8217;ll
+see a different server&#8217;s IP address.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cleanup_tutorial">8. Cleanup tutorial</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_shutdown_nodes_created_by_salt_cloud">8.1. Shutdown nodes created by Salt Cloud</h3>
+<div class="paragraph">
+<p>Log in to the salt master.</p>
+</div>
+<div class="paragraph">
+<p>Issue the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># query cloud nodes
+salt-cloud -Q
+# delete nodes
+salt-cloud -d web1 web2 web3 web4 web5 lb1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then log off from the master.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_destroy_node_created_with_terraform">8.2. Destroy node created with Terraform</h3>
+<div class="paragraph">
+<p>Issue the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>terraform destroy</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_double_check_digital_ocean_console">8.3. Double Check Digital Ocean Console</h3>
+<div class="paragraph">
+<p>Log in on the web console of DigitalOcean and check if all nodes have been destroyed.</p>
+</div>
+<div class="paragraph">
+<p>If not, destroy them manually (as they would otherwise waste money)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_license">Appendix A: License</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Copyright 2015 Alexander Schwartz</p>
 </div>
@@ -151,440 +1394,9 @@ limitations under the License.</p>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_simple_web_application">2. Simple Web Application</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_what_you_can_see_here">2.1. What you can see here</h3>
-<div class="paragraph">
-<p>This is a very simple JEE web application that uses a servlet and a Freemarker template to show the information about one draw.</p>
-</div>
-<div class="paragraph">
-<p>It does not yet contain any form of authentication. The Maven configuration will automatically start up Jetty as a Servlet container.</p>
-</div>
-<div class="paragraph">
-<p>The porpose of this application is to show in the next step what you&#8217;ll need to add in order to get authentication with Keycloak up and running.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_run">2.2. How to run</h3>
-<div class="paragraph">
-<p>Use the following command line to start it from the parent&#8217;s directory</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn test -pl simple-war -am -Psimple-war</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once it is started, point your browser to <a href="http://localhost:9090" class="bare">http://localhost:9090</a> to see the application.</p>
-</div>
-<div class="paragraph">
-<p>Enter a date like <code>2015-01-01</code> to see the predicted results of the given date.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_keycloak_enabled_web_application">3. Keycloak enabled Web Application</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_what_you_can_see_here_2">3.1. What you can see here</h3>
-<div class="paragraph">
-<p>This is the sample application as <code>simple-war</code>, but now it has been enhanced to support login via Keycloak.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_things_that_have_been_added_for_keycloak">3.2. Things that have been added for Keycloak</h3>
-<div class="paragraph">
-<p>The following bits and piece have been added to the application as described in the Keycloak manual:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Additions to <code>web.xml</code></p>
-<div class="listingblock">
-<div class="title">web.xml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;security-constraint&gt;</span>
-    <span class="tag">&lt;web-resource-collection&gt;</span>
-        <span class="tag">&lt;web-resource-name&gt;</span>Customers<span class="tag">&lt;/web-resource-name&gt;</span>
-        <span class="tag">&lt;url-pattern&gt;</span>/*<span class="tag">&lt;/url-pattern&gt;</span>
-    <span class="tag">&lt;/web-resource-collection&gt;</span>
-    <span class="tag">&lt;auth-constraint&gt;</span>
-        <span class="tag">&lt;role-name&gt;</span>user<span class="tag">&lt;/role-name&gt;</span>
-    <span class="tag">&lt;/auth-constraint&gt;</span>
-<span class="tag">&lt;/security-constraint&gt;</span>
-
-<span class="tag">&lt;security-role&gt;</span>
-    <span class="tag">&lt;role-name&gt;</span>user<span class="tag">&lt;/role-name&gt;</span>
-<span class="tag">&lt;/security-role&gt;</span></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>New file <code>jetty-web.xml</code></p>
-<div class="listingblock">
-<div class="title">jetty-web.xml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
-<span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Mort Bay Consulting//DTD Configure//EN&quot; &quot;http://www.eclipse.org/jetty/configure_9_0.dtd&quot;&gt;</span>
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-    <span class="tag">&lt;Get</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">securityHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-        <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">authenticator</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-            <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.keycloak.adapters.jetty.KeycloakJettyAuthenticator</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-            <span class="tag">&lt;/New&gt;</span>
-        <span class="tag">&lt;/Set&gt;</span>
-    <span class="tag">&lt;/Get&gt;</span>
-<span class="tag">&lt;/Configure&gt;</span></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p><code>keycloak.json</code> to hold keycloak configuration</p>
-</li>
-<li>
-<p>Addition to <code>DrawServlet</code> to show principal information</p>
-<div class="listingblock">
-<div class="title">DrawServlet.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">request.setAttribute(<span class="string"><span class="delimiter">&quot;</span><span class="content">idToken</span><span class="delimiter">&quot;</span></span>, ((KeycloakPrincipal)request.getUserPrincipal())
-        .getKeycloakSecurityContext().getIdToken());</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Addition to <code>index.ftl</code> to show principal information and to allow logout</p>
-<div class="listingblock">
-<div class="title">index.ftl</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="freemarker">Hello, ${idToken.name?html}!
-(&lt;a href=&quot;logout&quot;&gt;logout&lt;/a&gt;)</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p><code>logout.tfl</code> to show a logout page</p>
-</li>
-<li>
-<p><code>LogoutServlet.java</code> to support logout</p>
-<div class="listingblock">
-<div class="title">LogoutServlet.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebServlet</span>(urlPatterns = <span class="string"><span class="delimiter">&quot;</span><span class="content">/logout</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">LogoutServlet</span> <span class="directive">extends</span> HttpServlet {
-
-    <span class="annotation">@Override</span>
-    <span class="directive">protected</span> <span class="type">void</span> doGet(HttpServletRequest request, HttpServletResponse response)
-            <span class="directive">throws</span> ServletException, <span class="exception">IOException</span> {
-        request.logout();
-        request.getRequestDispatcher(<span class="string"><span class="delimiter">&quot;</span><span class="content">/logout.ftl</span><span class="delimiter">&quot;</span></span>).forward(request, response);
-    }
-
-}</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_run_2">3.3. How to run</h3>
-<div class="paragraph">
-<p>Please startup Keycloak as described in the introduction.</p>
-</div>
-<div class="paragraph">
-<p>Use the following command line to start the application from the parent&#8217;s directory</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn test -pl keycloak-war -am -Pkeycloak-war</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once it is started, point your browser to <a href="http://localhost:9090" class="bare">http://localhost:9090</a> to see the application.</p>
-</div>
-<div class="paragraph">
-<p>You&#8217;ll be redirected to the Keycloak login screen. Use username <code>demo</code> and password <code>demo</code> to log in.</p>
-</div>
-<div class="paragraph">
-<p>Enter a date like <code>2015-01-01</code> to see the predicted results of the given date.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_simple_dropwizard_integration">4. Simple Dropwizard Integration</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_what_you_can_see_here_3">4.1. What you can see here</h3>
-<div class="paragraph">
-<p>This is a very simple Dropwizard application setup to use Freemarker as templating.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_setup_for_keycloak">4.2. Setup for Keycloak</h3>
-<div class="paragraph">
-<p>The following elements add Keycloak authentication to Dropwizard:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Add Keycloak information to <code>config.yml</code></p>
-<div class="listingblock">
-<div class="title">config.yml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">server</span>:
-  <span class="key">applicationConnectors</span>:
-      - <span class="string"><span class="content">type: http</span></span>
-        <span class="key">port</span>: <span class="string"><span class="content">9090</span></span>
-  <span class="key">adminConnectors</span>:
-      - <span class="string"><span class="content">type: http</span></span>
-        <span class="key">port</span>: <span class="string"><span class="content">9091</span></span>
-
-<span class="key">keycloakConfiguration</span>:
-  <span class="key">realm</span>: <span class="string"><span class="content">test</span></span>
-  <span class="key">realmKey</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MIIB...AQAB</span><span class="delimiter">&quot;</span></span>
-  <span class="key">authServerUrl</span>: <span class="string"><span class="content">http://localhost:8080/auth</span></span>
-  <span class="key">sslRequired</span>: <span class="string"><span class="content">none</span></span>
-  <span class="key">registerNodeAtStartup</span>: <span class="string"><span class="content">true</span></span>
-  <span class="key">registerNodePeriod</span>: <span class="string"><span class="content">600</span></span>
-  <span class="key">resource</span>: <span class="string"><span class="content">test</span></span>
-  <span class="key">credentials</span>:
-    <span class="key">secret</span>: <span class="string"><span class="content">7abd7d08-b10f-4513-bbba-aebebddabb45</span></span></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Add Keycloak to <code>LotteryConfiguration.java</code></p>
-<div class="listingblock">
-<div class="title">LotteryConfiguration.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">LotteryConfiguration</span> <span class="directive">extends</span> <span class="predefined-type">Configuration</span> {
-
-    <span class="directive">private</span> AdapterConfig keycloakConfiguration = <span class="keyword">new</span> AdapterConfig();
-
-    <span class="directive">public</span> AdapterConfig getKeycloakConfiguration() {
-        <span class="keyword">return</span> keycloakConfiguration;
-    }
-
-    <span class="directive">public</span> <span class="type">void</span> setKeycloakConfiguration(AdapterConfig keycloakConfiguration) {
-        <span class="local-variable">this</span>.keycloakConfiguration = keycloakConfiguration;
-    }
-}</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Setup security constraint previously setup in <code>web.xml</code>, now in <code>LotteryApplication.java</code></p>
-<div class="listingblock">
-<div class="title">LotteryApplication.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">ConstraintSecurityHandler securityHandler = <span class="keyword">new</span> ConstraintSecurityHandler();
-environment.getApplicationContext().setSecurityHandler(securityHandler);
-securityHandler.addRole(<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>);
-ConstraintMapping constraintMapping = <span class="keyword">new</span> ConstraintMapping();
-constraintMapping.setPathSpec(<span class="string"><span class="delimiter">&quot;</span><span class="content">/*</span><span class="delimiter">&quot;</span></span>);
-Constraint constraint = <span class="keyword">new</span> Constraint();
-constraint.setAuthenticate(<span class="predefined-constant">true</span>);
-constraint.setRoles(<span class="keyword">new</span> <span class="predefined-type">String</span><span class="type">[]</span>{<span class="string"><span class="delimiter">&quot;</span><span class="content">user</span><span class="delimiter">&quot;</span></span>});
-constraintMapping.setConstraint(constraint);
-securityHandler.addConstraintMapping(constraintMapping);</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Setup keycloak previously setup in <code>jetty-web.xml</code>, now in <code>LotteryApplication.java</code></p>
-<div class="listingblock">
-<div class="title">LotteryApplication.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">KeycloakJettyAuthenticator keycloak = <span class="keyword">new</span> KeycloakJettyAuthenticator();
-environment.getApplicationContext().getSecurityHandler().setAuthenticator(keycloak);
-keycloak.setAdapterConfig(configuration.getKeycloakConfiguration());</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_run_3">4.3. How to run</h3>
-<div class="paragraph">
-<p>Use the following command line to start it from the parent&#8217;s directory</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn test -pl keycloak-dropwizard-jetty -am -Peycloak-dropwizard-jetty</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once it is started, point your browser to <a href="http://localhost:9090" class="bare">http://localhost:9090</a> to see the application.</p>
-</div>
-<div class="paragraph">
-<p>Enter a date like <code>2015-01-01</code> to see the predicted results of the given date.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_advanced_dropwizard_integration">5. Advanced Dropwizard Integration</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_what_you_can_see_here_4">5.1. What you can see here</h3>
-<div class="paragraph">
-<p>This is a setup that builds upon the simple integration.
-But instead of relying on security constraints it uses Dropwizard&#8217;s <code>@Auth</code> annotation.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_setup_for_keycloak_2">5.2. Setup for Keycloak</h3>
-<div class="paragraph">
-<p>The following elements add Keycloak authentication to Dropwizard and are identical to the simple setup:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Add Keycloak information to <code>config.yml</code></p>
-<div class="listingblock">
-<div class="title">config.yml</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">server</span>:
-  <span class="key">applicationConnectors</span>:
-      - <span class="string"><span class="content">type: http</span></span>
-        <span class="key">port</span>: <span class="string"><span class="content">9090</span></span>
-  <span class="key">adminConnectors</span>:
-      - <span class="string"><span class="content">type: http</span></span>
-        <span class="key">port</span>: <span class="string"><span class="content">9091</span></span>
-
-<span class="key">keycloakConfiguration</span>:
-  <span class="key">realm</span>: <span class="string"><span class="content">test</span></span>
-  <span class="key">realmKey</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">MIIB...AQAB</span><span class="delimiter">&quot;</span></span>
-  <span class="key">authServerUrl</span>: <span class="string"><span class="content">http://localhost:8080/auth</span></span>
-  <span class="key">sslRequired</span>: <span class="string"><span class="content">none</span></span>
-  <span class="key">registerNodeAtStartup</span>: <span class="string"><span class="content">true</span></span>
-  <span class="key">registerNodePeriod</span>: <span class="string"><span class="content">600</span></span>
-  <span class="key">resource</span>: <span class="string"><span class="content">test</span></span>
-  <span class="key">credentials</span>:
-    <span class="key">secret</span>: <span class="string"><span class="content">7abd7d08-b10f-4513-bbba-aebebddabb45</span></span></code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Add Keycloak as a security constraint to <code>LotteryConfiguration.java</code>, but without the role and URL mappings.</p>
-<div class="listingblock">
-<div class="title">LotteryConfiguration.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">LotteryConfiguration</span> <span class="directive">extends</span> <span class="predefined-type">Configuration</span> {
-
-    <span class="directive">private</span> AdapterConfig keycloakConfiguration = <span class="keyword">new</span> AdapterConfig();
-
-    <span class="directive">public</span> AdapterConfig getKeycloakConfiguration() {
-        <span class="keyword">return</span> keycloakConfiguration;
-    }
-
-    <span class="directive">public</span> <span class="type">void</span> setKeycloakConfiguration(AdapterConfig keycloakConfiguration) {
-        <span class="local-variable">this</span>.keycloakConfiguration = keycloakConfiguration;
-    }
-}</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Setup security constraint handler</p>
-<div class="listingblock">
-<div class="title">LotteryApplication.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">KeycloakJettyAuthenticator keycloak = <span class="keyword">new</span> KeycloakDropwizardAuthenticator();
-keycloak.setAdapterConfig(configuration.getKeycloakConfiguration());
-ConstraintSecurityHandler securityHandler = <span class="keyword">new</span> ConstraintSecurityHandler();
-environment.getApplicationContext().setSecurityHandler(securityHandler);
-environment.getApplicationContext().getSecurityHandler().setAuthenticator(keycloak);</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Setup keycloak as an Authentication Handler in Dropwizard style:</p>
-<div class="listingblock">
-<div class="title">LotteryApplication.java</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">KeycloakAuthFactory authFactory = <span class="keyword">new</span> KeycloakAuthFactory(configuration.getKeycloakConfiguration(), <span class="string"><span class="delimiter">&quot;</span><span class="content">dropwizard</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> KeycloakAuthenticator(), Authentication.class);
-environment.jersey().register(AuthFactory.binder(authFactory));</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Once this is set up, Dropwizard&#8217;s <code>@Auth</code> annotation can be used as usual in ressources:</p>
-</div>
-<div class="listingblock">
-<div class="title">DrawRessource</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@Produces</span>(MediaType.TEXT_HTML)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">DrawRessource</span> {
-
-    <span class="annotation">@POST</span>
-    <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/draw</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> DrawView draw(<span class="annotation">@FormParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">date</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">String</span> dateAsString, <span class="annotation">@Auth</span> Authentication auth) { <i class="conum" data-value="1"></i><b>(1)</b>
-        auth.checkUserInRole(<span class="predefined-type">Role</span>.USER);
-        DrawBean bean = <span class="keyword">new</span> DrawBean();
-        LocalDate date = LocalDate.parse(dateAsString);
-        bean.setDraw(DrawingService.drawNumbers(date));
-        DrawView view = <span class="keyword">new</span> DrawView(bean);
-        bean.setIdToken(auth.getIdToken());
-        <span class="keyword">return</span> view;
-    }
-
-    <span class="annotation">@GET</span>
-    <span class="annotation">@Path</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">/logout</span><span class="delimiter">&quot;</span></span>)
-    <span class="directive">public</span> LogoutView logout(<span class="annotation">@Auth</span>(required = <span class="predefined-constant">false</span>) Authentication auth) <span class="directive">throws</span> ServletException { <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="comment">// request.logout(); // no effect as we didn't hook into jetty</span>
-        <span class="keyword">if</span> (auth != <span class="predefined-constant">null</span>) {
-            auth.logout();
-        }
-        <span class="keyword">return</span> <span class="keyword">new</span> LogoutView();
-    }
-
-}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This enforces authentication of the user, possibly triggering a full OAuth redirect flow</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>An optional authentication provides the authentication details if the user is logged in already</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_run_4">5.3. How to run</h3>
-<div class="paragraph">
-<p>Use the following command line to start it from the parent&#8217;s directory</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>mvn test -pl keycloak-dropwizard-jaxrs -am -Peycloak-dropwizard-jaxrs</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Once it is started, point your browser to <a href="http://localhost:9090" class="bare">http://localhost:9090</a> to see the application.</p>
-</div>
-<div class="paragraph">
-<p>Enter a date like <code>2015-01-01</code> to see the predicted results of the given date.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-08-18 14:58:59 UTC
+Last updated 2015-08-18 15:17:25 UTC
 </div>
 </div>
 </body>
