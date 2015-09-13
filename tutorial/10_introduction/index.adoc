@@ -12,7 +12,12 @@ The following scenario will be implemented step by step: A user will use his or 
 
 
 .Infrastructure Big Picture
+ifdef::env-browser[]
+[uml,file="overview.png"]
+endif::env-browser[]
+ifndef::env-browser[]
 ["plantuml", "overview", "png"]
+endif::env-browser[]
 --
 include::overview.puml[]
 --
