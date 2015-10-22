@@ -7,6 +7,9 @@ base:
   '*':
      - consul
 # end::consul[]
+# tag::dnsmasq[]
+     - dnsmasq
+# end::dnsmasq[]
 # tag::websetup[]
   'web*':
      - web

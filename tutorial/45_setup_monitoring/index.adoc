@@ -77,3 +77,53 @@ salt '*' state.highstate
 
 Congratulations! You now have monitoring up and running. And Consul knows about all the hosts
 that are running you web service.
+
+### Using Consul for DNS resolving
+
+You can use `dnsmasq` to forward all DNS inquiries ending with `.consul` to consul.
+
+The state `dnsmasq/init.sls` will setup NetworkManager to use dnsmasq, and will setup dnsmasq to forward all requests to Consul.
+
+// http://www.morethanseven.net/2014/04/25/consul/
+
+[source,yaml]
+.salt/top.sls
+----
+base:
+  ...
+include::../../master/srv/salt/top.sls[tags=dnsmasq]
+----
+
+[source,yaml]
+.salt/dnsmasq/init.sls
+----
+include::../../master/srv/salt/dnsmasq/init.sls[]
+----
+
+[source]
+.salt/dnsmasq/networkmanager-dnsmasq.conf
+----
+include::../../master/srv/salt/dnsmasq/conf/networkmanager-dnsmasq.conf[]
+----
+
+[source]
+.salt/dnsmasq/dnsmasq-consul.conf
+----
+include::../../master/srv/salt/dnsmasq/conf/dnsmasq-consul.conf[]
+----
+
+After you've run this successfully, the following lookup will work:
+
+----
+$ nslookup web.service.consul
+Server:         127.0.0.1
+Address:        127.0.0.1#53
+
+Name:   web.service.consul
+Address: 192.168.23.21
+Name:   web.service.consul
+Address: 192.168.23.22
+Name:   web.service.consul
+Address: 192.168.23.23
+----
+
