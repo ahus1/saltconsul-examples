@@ -1,1 +1,0 @@
-This is version 0.10.0 of Consul Template

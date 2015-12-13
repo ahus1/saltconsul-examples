@@ -5,6 +5,7 @@ base:
 # end::mastersetup[]
 # tag::consul[]
   '*':
+     - tools
      - consul
 # end::consul[]
 # tag::dnsmasq[]
