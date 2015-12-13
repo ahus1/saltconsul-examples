@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "chef/centos-7.1"
+  config.vm.box = "bento/centos-7.1"
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
