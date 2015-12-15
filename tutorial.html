@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.2">
+<meta name="generator" content="Asciidoctor 1.5.3">
 <title>Manage the cloud with Terraform, Salt, Consul and DigitalOcean</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="css//asciidoctor.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css//coderay-asciidoctor.css">
 </head>
 <body id="tutorial" class="book toc2 toc-left">
@@ -854,28 +854,75 @@ In a production setup you&#8217;ll want to have a high available cluster.</p>
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">base</span>:
   <span class="error">...</span>
   <span class="key"><span class="delimiter">'</span><span class="content">*</span><span class="delimiter">'</span></span>:
+     - <span class="string"><span class="content">tools</span></span>
      - <span class="string"><span class="content">consul</span></span></code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">salt/consul/init.sls</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">consul</span>:
-  <span class="key">pkg.installed</span>:
-    - <span class="string"><span class="content">sources:</span></span>
-      - <span class="string"><span class="content">consul: salt://consul/rpm/consul-0.5.2-1.el7.centos.x86_64.rpm</span></span>
-      - <span class="string"><span class="content">consul-ui: salt://consul/rpm/consul-ui-0.5.2-1.el7.centos.x86_64.rpm</span></span>
-  <span class="key">service.running</span>:
-    - <span class="string"><span class="content">enable: True</span></span>
-<span class="comment"># don't use reload here as not all configuration elements can be reloaded</span>
-<span class="comment"># and a non-working configuration will not be reloaded</span>
-<span class="comment">#    - reload: True</span>
-    - <span class="string"><span class="content">watch:</span></span>
-      - <span class="string"><span class="content">pkg: consul</span></span>
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">/usr/share/consul_0.6.0</span>:
+  <span class="key">archive.extracted</span>:
+    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul/0.6.0/consul_0.6.0_linux_amd64.zip</span></span>
+    - <span class="string"><span class="content">source_hash: sha256=307fa26ae32cb8732aed2b3320ed8daf02c28b50d952cbaae8faf67c79f78847</span></span>
+    - <span class="string"><span class="content">archive_format: zip</span></span>
+    - <span class="string"><span class="content">if_missing: /usr/share/consul_0.6.0/consul</span></span>
+
+<span class="key">/usr/share/consul_web_ui_0.6.0</span>:
+  <span class="key">archive.extracted</span>:
+    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul/0.6.0/consul_0.6.0_web_ui.zip</span></span>
+    - <span class="string"><span class="content">source_hash: sha256=73c5e7ee50bb4a2efe56331d330e6d7dbf46335599c028344ccc4031c0c32eb0</span></span>
+    - <span class="string"><span class="content">archive_format: zip</span></span>
+    - <span class="string"><span class="content">if_missing: /usr/share/consul_web_ui_0.6.0/index.html</span></span>
+
+<span class="key">/usr/bin/consul</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: /usr/share/consul_0.6.0/consul</span></span>
+    - <span class="string"><span class="content">mode: 755</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="key">/etc/sysconfig/consul</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul/conf/sysconfig-consul</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="key">/etc/consul</span>:
+  <span class="error">file.directory</span>
+
+<span class="key">/var/lib/consul</span>:
+  <span class="key">file.directory</span>:
+    - <span class="string"><span class="content">user: consul</span></span>
+    - <span class="string"><span class="content">group: consul</span></span>
+    - <span class="string"><span class="content">recurse:</span><span class="content">
+        - user
+        - group</span></span>
+    - <span class="string"><span class="content">require:</span><span class="content">
+       - group: consul
+       - user: consul</span></span>
+
+<span class="key">/etc/consul/consul.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul/conf/consul.json</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="key">/usr/lib/systemd/system/consul.service</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul/conf/consul.service</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
 
 <span class="key">/etc/consul/consul-ui-service.json</span>:
   <span class="key">file.managed</span>:
     - <span class="string"><span class="content">source: salt://consul/conf/consul-ui-service.json</span></span>
+    - <span class="string"><span class="content">watch_in:</span></span>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="key">/etc/consul/consul-ui.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">source: salt://consul/conf/consul-ui.json</span></span>
     - <span class="string"><span class="content">watch_in:</span></span>
       - <span class="string"><span class="content">service: consul</span></span>
 
@@ -884,7 +931,18 @@ In a production setup you&#8217;ll want to have a high available cluster.</p>
     - <span class="string"><span class="content">template: jinja</span></span>
     - <span class="string"><span class="content">source: salt://consul/conf/common.json</span></span>
     - <span class="string"><span class="content">watch_in:</span></span>
-      - <span class="string"><span class="content">service: consul</span></span></code></pre>
+      - <span class="string"><span class="content">service: consul</span></span>
+
+<span class="key">consul</span>:
+  <span class="key">group.present</span>: <span class="string"><span class="content">[]</span></span>
+  <span class="key">user.present</span>:
+    - <span class="string"><span class="content">groups:</span></span>
+      - <span class="string"><span class="content">consul</span></span>
+  <span class="key">service.running</span>:
+    - <span class="string"><span class="content">enable: True</span></span>
+<span class="comment"># don't use reload here as not all configuration elements can be reloaded</span>
+<span class="comment"># and a non-working configuration will not be reloaded</span>
+<span class="comment">#    - reload: True</span></code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1109,9 +1167,16 @@ This job is done by <a href="https://github.com/hashicorp/consul-template" targe
     - <span class="string"><span class="content">source: salt://consul-template/templates</span></span>
     - <span class="string"><span class="content">makedirs: True</span></span>
 
+<span class="key">/usr/share/consul-template_0.12.0</span>:
+  <span class="key">archive.extracted</span>:
+    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul-template/0.12.0/consul-template_0.12.0_linux_amd64.zip</span></span>
+    - <span class="string"><span class="content">source_hash: sha256=1fff23fa44fd0af0cb56f011a911af1e9d407a2eeb360f520a503d2f330fdf43</span></span>
+    - <span class="string"><span class="content">archive_format: zip</span></span>
+    - <span class="string"><span class="content">if_missing: /usr/share/consul-template_0.12.0/consul-template</span></span>
+
 <span class="key">/usr/bin/consul-template</span>:
   <span class="key">file.managed</span>:
-    - <span class="string"><span class="content">source: salt://consul-template/bin/consul-template</span></span>
+    - <span class="string"><span class="content">source: /usr/share/consul-template_0.12.0/consul-template</span></span>
     - <span class="string"><span class="content">mode: 755</span></span>
   <span class="key">service.running</span>:
     - <span class="string"><span class="content">enable: True</span></span>
@@ -1469,7 +1534,7 @@ limitations under the License.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-10-22 15:20:38 UTC
+Last updated 2015-12-15 07:20:48 UTC
 </div>
 </div>
 </body>
