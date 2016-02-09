@@ -19,6 +19,7 @@ httpd:
 # tag::consul[]
 /etc/consul/httpd.json:
   file.managed:
+    - template: jinja
     - source: salt://web/conf/httpd.json
     - watch_in:
       - service: consul

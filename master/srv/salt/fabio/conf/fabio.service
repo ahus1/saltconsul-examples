@@ -1,0 +1,14 @@
+[Unit]
+Description=Fabio is a load balancer
+Documentation=https://github.com/eBay/fabio
+After=consul.service
+Wants=consul.service
+
+[Service]
+User=root
+Group=root
+ExecStart=/usr/bin/fabio -cfg /etc/fabio.properties
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
