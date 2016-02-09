@@ -1,0 +1,9 @@
+{ "ip": 
+            {% if salt['grains.get']('ip4_interfaces:eth0', None) %}
+            "{{ grains['ip4_interfaces']['eth0'][0] }}"
+            {% endif %}
+
+            {% if salt['grains.get']('ip4_interfaces:enp0s8', None) %}
+            "{{ grains['ip4_interfaces']['enp0s8'][0] }}"
+            {% endif %}
+}

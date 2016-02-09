@@ -10,6 +10,10 @@ httpd:
   file.managed:
     - template: jinja
     - source: salt://web/conf/index.html
+/var/www/html/index.json:
+  file.managed:
+    - template: jinja
+    - source: salt://web/conf/index.json
 # end::websetup[]
 
 # tag::consul[]
