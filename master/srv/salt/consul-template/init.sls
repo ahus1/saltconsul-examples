@@ -1,3 +1,5 @@
+{% set consul_template_version = '0.12.2' %}
+
 /usr/lib/systemd/system/consul-template.service:
   file.managed:
     - source: salt://consul-template/conf/consul-template.service
@@ -7,16 +9,16 @@
     - source: salt://consul-template/templates
     - makedirs: True
 
-/usr/share/consul-template_0.12.0:
+/usr/share/consul-template_{{ consul_template_version }}:
   archive.extracted:
-    - source: https://releases.hashicorp.com/consul-template/0.12.0/consul-template_0.12.0_linux_amd64.zip
-    - source_hash: sha256=1fff23fa44fd0af0cb56f011a911af1e9d407a2eeb360f520a503d2f330fdf43
+    - source: https://releases.hashicorp.com/consul-template/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_amd64.zip
+    - source_hash: sha256=a8780f365bf5bfad47272e4682636084a7475ce74b336cdca87c48a06dd8a193
     - archive_format: zip
-    - if_missing: /usr/share/consul-template_0.12.0/consul-template
+    - if_missing: /usr/share/consul-template_{{ consul_template_version }}/consul-template
 
 /usr/bin/consul-template:
   file.managed:
-    - source: /usr/share/consul-template_0.12.0/consul-template
+    - source: /usr/share/consul-template_{{ consul_template_version }}/consul-template
     - mode: 755
   service.running:
     - enable: True
