@@ -1,21 +1,23 @@
 # tag::consul[]
-/usr/share/consul_0.6.0:
-  archive.extracted:
-    - source: https://releases.hashicorp.com/consul/0.6.0/consul_0.6.0_linux_amd64.zip
-    - source_hash: sha256=307fa26ae32cb8732aed2b3320ed8daf02c28b50d952cbaae8faf67c79f78847
-    - archive_format: zip
-    - if_missing: /usr/share/consul_0.6.0/consul
+{% set consul_version = '0.6.3' %}
 
-/usr/share/consul_web_ui_0.6.0:
+/usr/share/consul_{{ consul_version }}:
   archive.extracted:
-    - source: https://releases.hashicorp.com/consul/0.6.0/consul_0.6.0_web_ui.zip
-    - source_hash: sha256=73c5e7ee50bb4a2efe56331d330e6d7dbf46335599c028344ccc4031c0c32eb0
+    - source: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
+    - source_hash: sha256=b0532c61fec4a4f6d130c893fd8954ec007a6ad93effbe283a39224ed237e250
     - archive_format: zip
-    - if_missing: /usr/share/consul_web_ui_0.6.0/index.html
+    - if_missing: /usr/share/consul_{{ consul_version }}/consul
+
+/usr/share/consul_web_ui_{{ consul_version }}:
+  archive.extracted:
+    - source: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_web_ui.zip
+    - source_hash: sha256=93bbb300cacfe8de90fb3bd5ede7d37ae6ce014898edc520b9c96a676b2bbb72
+    - archive_format: zip
+    - if_missing: /usr/share/consul_web_ui_{{ consul_version }}/index.html
 
 /usr/bin/consul:
   file.managed:
-    - source: /usr/share/consul_0.6.0/consul
+    - source: /usr/share/consul_{{ consul_version }}/consul
     - mode: 755
     - watch_in:
       - service: consul
@@ -61,6 +63,9 @@
 /etc/consul/consul-ui.json:
   file.managed:
     - source: salt://consul/conf/consul-ui.json
+    - template: jinja
+    - defaults:
+        consul_version: {{ consul_version }}
     - watch_in:
       - service: consul
 
