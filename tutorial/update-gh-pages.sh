@@ -4,7 +4,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 
   #go to home and setup git
   cd $HOME
-  git config --global user.email "travis@travis-ci.org"
+  git config --global user.email "alexander.schwartz@gmx.net"
   git config --global user.name "Travis"
 
   #using token clone gh-pages branch
