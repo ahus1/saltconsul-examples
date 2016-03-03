@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.3">
+<meta name="generator" content="Asciidoctor 1.5.4">
 <title>Manage the cloud with Terraform, Salt, Consul and DigitalOcean</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="css//asciidoctor.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css//coderay-asciidoctor.css">
 </head>
 <body id="tutorial" class="book toc2 toc-left">
@@ -763,7 +763,11 @@ The benefit is, that the new VM (a "minion") is controlled by our master server.
 <span class="key">/var/www/html/index.html</span>:
   <span class="key">file.managed</span>:
     - <span class="string"><span class="content">template: jinja</span></span>
-    - <span class="string"><span class="content">source: salt://web/conf/index.html</span></span></code></pre>
+    - <span class="string"><span class="content">source: salt://web/conf/index.html</span></span>
+<span class="key">/var/www/html/index.json</span>:
+  <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">template: jinja</span></span>
+    - <span class="string"><span class="content">source: salt://web/conf/index.json</span></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -861,23 +865,25 @@ In a production setup you&#8217;ll want to have a high available cluster.</p>
 <div class="listingblock">
 <div class="title">salt/consul/init.sls</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">/usr/share/consul_0.6.0</span>:
-  <span class="key">archive.extracted</span>:
-    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul/0.6.0/consul_0.6.0_linux_amd64.zip</span></span>
-    - <span class="string"><span class="content">source_hash: sha256=307fa26ae32cb8732aed2b3320ed8daf02c28b50d952cbaae8faf67c79f78847</span></span>
-    - <span class="string"><span class="content">archive_format: zip</span></span>
-    - <span class="string"><span class="content">if_missing: /usr/share/consul_0.6.0/consul</span></span>
+<pre class="CodeRay highlight"><code data-lang="yaml">{<span class="error">% set consul_version = '0.6.3' %}</span>
 
-<span class="key">/usr/share/consul_web_ui_0.6.0</span>:
+<span class="error">/usr/share/consul_{{ consul_version }}:</span>
   <span class="key">archive.extracted</span>:
-    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul/0.6.0/consul_0.6.0_web_ui.zip</span></span>
-    - <span class="string"><span class="content">source_hash: sha256=73c5e7ee50bb4a2efe56331d330e6d7dbf46335599c028344ccc4031c0c32eb0</span></span>
+    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip</span></span>
+    - <span class="string"><span class="content">source_hash: sha256=b0532c61fec4a4f6d130c893fd8954ec007a6ad93effbe283a39224ed237e250</span></span>
     - <span class="string"><span class="content">archive_format: zip</span></span>
-    - <span class="string"><span class="content">if_missing: /usr/share/consul_web_ui_0.6.0/index.html</span></span>
+    - <span class="string"><span class="content">if_missing: /usr/share/consul_{{ consul_version }}/consul</span></span>
+
+<span class="error">/usr/share/consul_web_ui_{{ consul_version }}:</span>
+  <span class="key">archive.extracted</span>:
+    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_web_ui.zip</span></span>
+    - <span class="string"><span class="content">source_hash: sha256=93bbb300cacfe8de90fb3bd5ede7d37ae6ce014898edc520b9c96a676b2bbb72</span></span>
+    - <span class="string"><span class="content">archive_format: zip</span></span>
+    - <span class="string"><span class="content">if_missing: /usr/share/consul_web_ui_{{ consul_version }}/index.html</span></span>
 
 <span class="key">/usr/bin/consul</span>:
   <span class="key">file.managed</span>:
-    - <span class="string"><span class="content">source: /usr/share/consul_0.6.0/consul</span></span>
+    - <span class="string"><span class="content">source: /usr/share/consul_{{ consul_version }}/consul</span></span>
     - <span class="string"><span class="content">mode: 755</span></span>
     - <span class="string"><span class="content">watch_in:</span></span>
       - <span class="string"><span class="content">service: consul</span></span>
@@ -923,6 +929,9 @@ In a production setup you&#8217;ll want to have a high available cluster.</p>
 <span class="key">/etc/consul/consul-ui.json</span>:
   <span class="key">file.managed</span>:
     - <span class="string"><span class="content">source: salt://consul/conf/consul-ui.json</span></span>
+    - <span class="string"><span class="content">template: jinja</span></span>
+    - <span class="string"><span class="content">defaults:</span><span class="content">
+        consul_version: {{ consul_version }}</span></span>
     - <span class="string"><span class="content">watch_in:</span></span>
       - <span class="string"><span class="content">service: consul</span></span>
 
@@ -1017,6 +1026,7 @@ You can now look at consul&#8217;s console using a web browser and the salt mast
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">/etc/consul/httpd.json</span>:
   <span class="key">file.managed</span>:
+    - <span class="string"><span class="content">template: jinja</span></span>
     - <span class="string"><span class="content">source: salt://web/conf/httpd.json</span></span>
     - <span class="string"><span class="content">watch_in:</span></span>
       - <span class="string"><span class="content">service: consul</span></span></code></pre>
@@ -1029,8 +1039,20 @@ You can now look at consul&#8217;s console using a web browser and the salt mast
 <div class="title">salt/web/conf/httpd.json</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="json">{
-
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">service</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">tags</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>], <span class="key"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span>: <span class="integer">80</span>},
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">service</span><span class="delimiter">&quot;</span></span>: {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>,
+    {<span class="error">#</span> <span class="error">f</span><span class="error">a</span><span class="error">b</span><span class="error">i</span><span class="error">o</span> <span class="error">(</span><span class="error">a</span><span class="error">s</span> <span class="error">o</span><span class="error">f</span> <span class="float">1.0</span><span class="error">.</span><span class="integer">8</span><span class="error">)</span> <span class="error">n</span><span class="error">e</span><span class="error">e</span><span class="error">d</span><span class="error">s</span> <span class="error">a</span><span class="error">n</span> <span class="error">a</span><span class="error">d</span><span class="error">d</span><span class="error">r</span><span class="error">e</span><span class="error">s</span><span class="error">s</span> <span class="error">f</span><span class="error">o</span><span class="error">r</span> <span class="error">e</span><span class="error">a</span><span class="error">c</span><span class="error">h</span> <span class="error">s</span><span class="error">e</span><span class="error">r</span><span class="error">v</span><span class="error">i</span><span class="error">c</span><span class="error">e</span> <span class="error">#</span>}
+    {<span class="error">#</span> <span class="error">w</span><span class="error">a</span><span class="error">t</span><span class="error">c</span><span class="error">h</span> <span class="error">h</span><span class="error">t</span><span class="error">t</span><span class="error">p</span><span class="error">s</span>:<span class="error">/</span><span class="error">/</span><span class="error">g</span><span class="error">i</span><span class="error">t</span><span class="error">h</span><span class="error">u</span><span class="error">b</span><span class="error">.</span><span class="error">c</span><span class="error">o</span><span class="error">m</span><span class="error">/</span><span class="error">e</span><span class="error">B</span><span class="error">a</span><span class="error">y</span><span class="error">/</span><span class="error">f</span><span class="error">a</span><span class="error">b</span><span class="error">i</span><span class="error">o</span><span class="error">/</span><span class="error">p</span><span class="error">u</span><span class="error">l</span><span class="error">l</span><span class="error">/</span><span class="integer">49</span> <span class="error">i</span><span class="error">f</span> <span class="error">t</span><span class="error">h</span><span class="error">i</span><span class="error">s</span> <span class="error">c</span><span class="error">h</span><span class="error">a</span><span class="error">n</span><span class="error">g</span><span class="error">e</span><span class="error">s</span> <span class="error">#</span>}
+    {<span class="error">%</span> <span class="error">i</span><span class="error">f</span> <span class="error">s</span><span class="error">a</span><span class="error">l</span><span class="error">t</span>[<span class="error">'</span><span class="error">g</span><span class="error">r</span><span class="error">a</span><span class="error">i</span><span class="error">n</span><span class="error">s</span><span class="error">.</span><span class="error">g</span><span class="error">e</span><span class="error">t</span><span class="error">'</span>]<span class="error">(</span><span class="error">'</span><span class="error">i</span><span class="error">p</span><span class="integer">4</span><span class="error">_</span><span class="error">i</span><span class="error">n</span><span class="error">t</span><span class="error">e</span><span class="error">r</span><span class="error">f</span><span class="error">a</span><span class="error">c</span><span class="error">e</span><span class="error">s</span>:<span class="error">e</span><span class="error">t</span><span class="error">h</span><span class="integer">0</span><span class="error">'</span>, <span class="error">N</span><span class="error">o</span><span class="error">n</span><span class="error">e</span><span class="error">)</span> <span class="error">%</span>}
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ grains['ip4_interfaces']['eth0'][0] }}</span><span class="delimiter">&quot;</span></span>,
+    {<span class="error">%</span> <span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">i</span><span class="error">f</span> <span class="error">%</span>}
+    {<span class="error">%</span> <span class="error">i</span><span class="error">f</span> <span class="error">s</span><span class="error">a</span><span class="error">l</span><span class="error">t</span>[<span class="error">'</span><span class="error">g</span><span class="error">r</span><span class="error">a</span><span class="error">i</span><span class="error">n</span><span class="error">s</span><span class="error">.</span><span class="error">g</span><span class="error">e</span><span class="error">t</span><span class="error">'</span>]<span class="error">(</span><span class="error">'</span><span class="error">i</span><span class="error">p</span><span class="integer">4</span><span class="error">_</span><span class="error">i</span><span class="error">n</span><span class="error">t</span><span class="error">e</span><span class="error">r</span><span class="error">f</span><span class="error">a</span><span class="error">c</span><span class="error">e</span><span class="error">s</span>:<span class="error">e</span><span class="error">n</span><span class="error">p</span><span class="integer">0</span><span class="error">s</span><span class="integer">8</span><span class="error">'</span>, <span class="error">N</span><span class="error">o</span><span class="error">n</span><span class="error">e</span><span class="error">)</span> <span class="error">%</span>}
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">{{ grains['ip4_interfaces']['enp0s8'][0] }}</span><span class="delimiter">&quot;</span></span>,
+    {<span class="error">%</span> <span class="error">e</span><span class="error">n</span><span class="error">d</span><span class="error">i</span><span class="error">f</span> <span class="error">%</span>}
+    {<span class="error">#</span> <span class="error">f</span><span class="error">a</span><span class="error">b</span><span class="error">i</span><span class="error">o</span> <span class="error">n</span><span class="error">e</span><span class="error">e</span><span class="error">d</span><span class="error">s</span> <span class="error">u</span><span class="error">r</span><span class="error">l</span><span class="error">p</span><span class="error">r</span><span class="error">e</span><span class="error">f</span><span class="error">i</span><span class="error">x</span><span class="error">-</span> <span class="error">t</span><span class="error">a</span><span class="error">g</span> <span class="error">t</span><span class="error">o</span> <span class="error">c</span><span class="error">o</span><span class="error">n</span><span class="error">f</span><span class="error">i</span><span class="error">g</span><span class="error">u</span><span class="error">r</span><span class="error">e</span> <span class="error">i</span><span class="error">t</span><span class="error">s</span> <span class="error">r</span><span class="error">o</span><span class="error">u</span><span class="error">t</span><span class="error">i</span><span class="error">n</span><span class="error">g</span> <span class="error">#</span>}
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">tags</span><span class="delimiter">&quot;</span></span>: [<span class="string"><span class="delimiter">&quot;</span><span class="content">web</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">urlprefix-/</span><span class="delimiter">&quot;</span></span>],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">port</span><span class="delimiter">&quot;</span></span>: <span class="integer">80</span>
+  },
 
   <span class="key"><span class="delimiter">&quot;</span><span class="content">check</span><span class="delimiter">&quot;</span></span>: {
     <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">api</span><span class="delimiter">&quot;</span></span>,
@@ -1158,7 +1180,9 @@ This job is done by <a href="https://github.com/hashicorp/consul-template" targe
 <div class="listingblock">
 <div class="title">consul-template/init.sls</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">/usr/lib/systemd/system/consul-template.service</span>:
+<pre class="CodeRay highlight"><code data-lang="yaml">{<span class="error">% set consul_template_version = '0.12.2' %}</span>
+
+<span class="key">/usr/lib/systemd/system/consul-template.service</span>:
   <span class="key">file.managed</span>:
     - <span class="string"><span class="content">source: salt://consul-template/conf/consul-template.service</span></span>
 
@@ -1167,16 +1191,16 @@ This job is done by <a href="https://github.com/hashicorp/consul-template" targe
     - <span class="string"><span class="content">source: salt://consul-template/templates</span></span>
     - <span class="string"><span class="content">makedirs: True</span></span>
 
-<span class="key">/usr/share/consul-template_0.12.0</span>:
+<span class="error">/usr/share/consul-template_{{ consul_template_version }}:</span>
   <span class="key">archive.extracted</span>:
-    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul-template/0.12.0/consul-template_0.12.0_linux_amd64.zip</span></span>
-    - <span class="string"><span class="content">source_hash: sha256=1fff23fa44fd0af0cb56f011a911af1e9d407a2eeb360f520a503d2f330fdf43</span></span>
+    - <span class="string"><span class="content">source: https://releases.hashicorp.com/consul-template/{{ consul_template_version }}/consul-template_{{ consul_template_version }}_linux_amd64.zip</span></span>
+    - <span class="string"><span class="content">source_hash: sha256=a8780f365bf5bfad47272e4682636084a7475ce74b336cdca87c48a06dd8a193</span></span>
     - <span class="string"><span class="content">archive_format: zip</span></span>
-    - <span class="string"><span class="content">if_missing: /usr/share/consul-template_0.12.0/consul-template</span></span>
+    - <span class="string"><span class="content">if_missing: /usr/share/consul-template_{{ consul_template_version }}/consul-template</span></span>
 
 <span class="key">/usr/bin/consul-template</span>:
   <span class="key">file.managed</span>:
-    - <span class="string"><span class="content">source: /usr/share/consul-template_0.12.0/consul-template</span></span>
+    - <span class="string"><span class="content">source: /usr/share/consul-template_{{ consul_template_version }}/consul-template</span></span>
     - <span class="string"><span class="content">mode: 755</span></span>
   <span class="key">service.running</span>:
     - <span class="string"><span class="content">enable: True</span></span>
@@ -1534,7 +1558,7 @@ limitations under the License.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-12-15 07:20:48 UTC
+Last updated 2016-03-03 22:10:28 UTC
 </div>
 </div>
 </body>
