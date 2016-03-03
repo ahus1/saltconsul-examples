@@ -128,7 +128,12 @@ SSHKEY
       minion.vm.hostname = "lb#{i}"
 
       # Loadbalancer
+      ## nginx
       minion.vm.network :forwarded_port, guest: 9090, host: 9090, protocol: 'tcp'
+      ## fabio routing
+      minion.vm.network :forwarded_port, guest: 9999, host: 9999, protocol: 'tcp'
+      ## fabio UI
+      minion.vm.network :forwarded_port, guest: 9998, host: 9998, protocol: 'tcp'
 
       minion.vm.network :forwarded_port, guest: 22, host: 2202, auto_correct: true
 
